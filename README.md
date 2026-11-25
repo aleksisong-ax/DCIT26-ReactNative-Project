@@ -1,19 +1,28 @@
 # PrepCrux
 
-PrepCrux is a React Native study-app prototype inspired by a purple, card-based mobile interface. It currently uses sample content rather than user-created materials.
+PrepCrux is a mobile-first React Native study app for creating and practicing with learning materials. It also includes four sample study units.
 
 ## Features
 
-- Welcome screen and a library of four sample study units.
-- A unit screen with a flippable flashcard, a one-question quiz with immediate feedback, a reviewer, and a short summary.
-- In-memory navigation and quiz state. No information is saved between sessions.
+- Create quizzes containing multiple-choice and identification questions. Choose the correct multiple-choice option or specify an expected identification answer.
+- Take quizzes, receive immediate feedback, and see a final score. Identification answers ignore case and differences in surrounding or repeated whitespace, but otherwise must match exactly.
+- Create flashcard decks with multiple cards and flip through them.
+- Create and read notes or reviewers.
+- Delete saved materials with confirmation.
+- Explore the original sample study units, including a flashcard, quiz, reviewer, and summary for each.
+- Materials are saved locally on the device or in the browser using AsyncStorage; quiz results are not saved.
+
+To create content, enter the app, tap **Create & study your own materials**, and choose a material type. Tap a saved item in **Your collection** to study it.
 
 ## Stack and structure
 
-- React Native and React 19, using Expo SDK 53; React Native Web supports the browser preview.
-- `App.js`: sample unit content, screen navigation, components, and styles.
-- `app.json`: Expo app metadata and orientation.
+- React Native and React 19, using Expo SDK 53; React Native Web supports the browser version.
+- `@react-native-async-storage/async-storage` stores materials locally (browser storage on web).
+- `App.js`: sample units, main navigation, and original screens.
+- `src/MyMaterials.js`: personal material creation, local storage, and practice screens.
+- `app.json`: Expo app metadata, orientation, and GitHub Pages base path.
 - `package.json` and `package-lock.json`: dependencies and npm scripts.
+- `.github/workflows/pages.yml`: GitHub Pages build and deployment.
 - `.gitignore`: excludes dependencies and generated output.
 
 ## Setup and running
@@ -21,7 +30,7 @@ PrepCrux is a React Native study-app prototype inspired by a purple, card-based 
 Install Node.js and npm, then run:
 
 ```sh
-npm install
+npm ci
 npm start
 ```
 
@@ -31,18 +40,20 @@ There are currently no project-specific environment variables or secrets.
 
 ## Build and test
 
-`npm run export` invokes Expo's export command; for a web-only static export use `npx expo export --platform web`. Native installable builds and store deployment are not configured. There is no automated test suite yet.
+`npm run export` invokes Expo's export command; for a web-only static export use `npx expo export --platform web`. Native installable builds and store deployment are not configured. There is no automated test suite in the repository yet.
 
-## APIs, storage, and deployment
+## Storage, APIs, and deployment
 
-There are no API endpoints, database, or persistent storage. GitHub Actions builds the web app on pushes to `main` and deploys `dist/` to GitHub Pages using `.github/workflows/pages.yml`. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. Once deployed, the site is available at https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/.
+Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There are no API endpoints, server database, or accounts.
+
+GitHub Actions builds the web app on pushes to `main` and deploys `dist/` to GitHub Pages using `.github/workflows/pages.yml`. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. The site is at https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/.
 
 The Expo `experiments.baseUrl` setting in `app.json` matches the repository path. Change it if deploying to a different path. The workflow can also be started manually from the Actions tab.
 
 ## Limitations and development notes
 
-- Content is hard-coded. Creating, editing, deleting, importing, or saving study materials is not implemented.
-- Quizzes provide feedback on one sample question per unit; there is no progress tracking or saved score.
-- Authentication, cloud sync, sharing, and AI-generated content are not implemented.
-- `npm audit` reports vulnerabilities in transitive dependencies, including high-severity advisories in development/build tooling. Review these before production use and update the Expo stack when a compatible fix is available.
-- Update this document whenever functionality or configuration changes.
+- Saved materials cannot currently be edited, imported, exported, or shared. Delete and recreate an item to change it.
+- Identification grading accepts one expected text answer; it does not evaluate synonyms or spelling variations.
+- No persistent quiz results, progress tracking, authentication, cloud sync, or AI-generated content.
+- Local data is not backed up or synced and is not suitable for sensitive information.
+- `npm audit` has reported vulnerabilities in transitive dependencies, including high-severity advisories in development/build tooling. Review these before production use and update the Expo stack when a compatible fix is available.

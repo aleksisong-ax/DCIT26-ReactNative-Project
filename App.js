@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MyMaterials from './src/MyMaterials';
 import { SafeAreaView, ScrollView, View, Text, Pressable, StyleSheet, StatusBar } from 'react-native';
 
 const units = [
@@ -27,7 +28,7 @@ export default function App() {
   function openActivity(name) { setFlipped(false); setChoice(null); setScreen(name); }
   return <SafeAreaView style={styles.safe}><StatusBar barStyle={screen === 'welcome' || screen === 'unit' ? 'light-content' : 'dark-content'} />
     <View style={styles.app}>
-      {screen === 'welcome' ? <View style={styles.welcome}>
+      {screen === 'materials' ? <MyMaterials onExit={() => setScreen('library')} /> : screen === 'welcome' ? <View style={styles.welcome}>
         <View style={styles.welcomeTop}><Brand light /><Text style={styles.topLabel}>YOUR STUDY SPACE</Text></View>
         <View style={styles.heroArt} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><View style={styles.orbitOne}/><View style={styles.orbitTwo}/><View style={styles.paperBack}/><View style={styles.paper}><Text style={styles.paperStar}>✳</Text><View style={styles.paperLine}/><View style={[styles.paperLine,{width: 72}]}/><View style={[styles.paperLine,{width: 94}]}/></View><View style={styles.floatingStar}><Text style={styles.floatingStarText}>✦</Text></View></View>
         <View style={styles.welcomeCopy}><View style={styles.pill}><Text style={styles.pillText}>A LITTLE PROGRESS EVERY DAY</Text></View><Text style={styles.heroTitle}>Study smarter.{'\n'}Remember <Text style={styles.lavender}>more.</Text></Text><Text style={styles.heroDescription}>Your little corner for big ideas. Turn study time into something you look forward to.</Text></View>
@@ -36,6 +37,7 @@ export default function App() {
         <View style={styles.libraryHeader}><Brand /><View style={styles.avatar}><Text style={styles.avatarText}>✦</Text></View></View>
         <Text style={styles.eyebrow}>YOUR LEARNING JOURNEY</Text><Text style={styles.pageTitle}>A little closer{ '\n'}to <Text style={styles.purple}>your goals.</Text></Text><Text style={styles.subtitle}>Pick a topic and make today count.</Text>
         <View style={styles.banner}><View style={styles.bannerCircle}/><Text style={styles.bannerEyebrow}>A NOTE TO YOURSELF  ✦</Text><Text style={styles.bannerTitle}>You've got this.</Text><Text style={styles.bannerCopy}>Every session is a step forward.</Text></View>
+        <View style={{ marginTop: 20 }}><Button label="+  Create & study your own materials" onPress={() => setScreen('materials')} secondary /></View>
         <View style={styles.sectionHeading}><View><Text style={styles.eyebrow}>LET'S GET LEARNING</Text><Text style={styles.sectionTitle}>Explore your units</Text></View><Text style={styles.count}>{units.length} UNITS</Text></View>
         {units.map((item, index) => <Pressable key={item.title} accessibilityRole="button" accessibilityLabel={`Open unit ${index + 1}: ${item.title}`} onPress={() => openUnit(index)} style={({ pressed }) => [styles.unitCard, { backgroundColor: item.color }, pressed && styles.pressed]}><View><Text style={styles.unitTag}>UNIT {String(index + 1).padStart(2, '0')}  /  {item.tag}</Text><Text style={styles.unitTitle}>{item.title}</Text></View><View style={styles.arrowCircle}><Text style={styles.arrowText}>↗</Text></View></Pressable>)}
         <Text style={styles.footnote}>SAMPLE CONTENT  •  MADE FOR PRACTICE</Text>
