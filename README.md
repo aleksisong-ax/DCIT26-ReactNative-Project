@@ -1,37 +1,46 @@
 # PrepCrux
 
-PrepCrux is a planned React Native mobile application for creating learning materials such as quizzes, flashcards, reviewers, and summaries. This repository currently contains documentation only; the application has not yet been implemented.
+PrepCrux is a React Native study-app prototype inspired by a purple, card-based mobile interface. It currently uses sample content rather than user-created materials.
 
-## Current status and features
+## Features
 
-There is no application code or implemented functionality in this repository yet. The learning-material features described above are project goals, not available features.
+- Welcome screen and a library of four sample study units.
+- A unit screen with a flippable flashcard, a one-question quiz with immediate feedback, a reviewer, and a short summary.
+- In-memory navigation and quiz state. No information is saved between sessions.
 
-## Technology stack
+## Stack and structure
 
-React Native is the intended application framework. No framework, programming language, package manager, or other runtime dependencies have been configured in this repository yet.
+- React Native and React 19, using Expo SDK 53; React Native Web supports the browser preview.
+- `App.js`: sample unit content, screen navigation, components, and styles.
+- `app.json`: Expo app metadata and orientation.
+- `package.json` and `package-lock.json`: dependencies and npm scripts.
+- `.gitignore`: excludes dependencies and generated output.
 
-## Project structure
+## Setup and running
 
-- `README.md` — current project status and development information.
+Install Node.js and npm, then run:
 
-## Setup, configuration, and running
+```sh
+npm install
+npm start
+```
 
-Clone the repository using your preferred GitHub authentication method. There are currently no application dependencies to install, environment variables to configure, or application commands to run.
+Use the Expo development server instructions to open the app on a device or emulator. Alternatively, run `npm run android`, `npm run ios`, or `npm run web`. Android and iOS require appropriate local tooling or a compatible Expo Go installation; iOS simulator tooling requires macOS.
 
-## Building and testing
+There are currently no project-specific environment variables or secrets.
 
-No build or test configuration, scripts, or test suite have been added yet. Build and test instructions should be documented when those are introduced.
+## Build and test
 
-## APIs and data storage
+`npm run export` invokes Expo's export command; for a web-only static export use `npx expo export --platform web`. Native installable builds and store deployment are not configured. There is no automated test suite yet.
 
-No API endpoints, database schema, or storage implementation exist in this repository yet.
+## APIs, storage, and deployment
 
-## Deployment
+There are no API endpoints, database, persistent storage, or deployment configuration. The exported web files are written to `dist/`; publishing them is not configured in this repository.
 
-No deployment configuration or deployment process has been established.
+## Limitations and development notes
 
-## Development notes and limitations
-
-- The repository does not yet contain a React Native project, screens, or working study tools.
-- Setup, architecture, testing, and deployment details need to be added as the application is implemented.
-- Keep this document aligned with the actual code and avoid describing planned functionality as complete.
+- Content is hard-coded. Creating, editing, deleting, importing, or saving study materials is not implemented.
+- Quizzes provide feedback on one sample question per unit; there is no progress tracking or saved score.
+- Authentication, cloud sync, sharing, and AI-generated content are not implemented.
+- `npm audit` reports vulnerabilities in transitive dependencies, including high-severity advisories in development/build tooling. Review these before production use and update the Expo stack when a compatible fix is available.
+- Update this document whenever functionality or configuration changes.
