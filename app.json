@@ -4,6 +4,9 @@
     "slug": "prepcrux",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light"
+    "userInterfaceStyle": "light",
+    "experiments": {
+      "baseUrl": "/DCIT26-ReactNative-Project"
+    }
   }
 }

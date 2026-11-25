@@ -35,7 +35,9 @@ There are currently no project-specific environment variables or secrets.
 
 ## APIs, storage, and deployment
 
-There are no API endpoints, database, persistent storage, or deployment configuration. The exported web files are written to `dist/`; publishing them is not configured in this repository.
+There are no API endpoints, database, or persistent storage. GitHub Actions builds the web app on pushes to `main` and deploys `dist/` to GitHub Pages using `.github/workflows/pages.yml`. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. Once deployed, the site is available at https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/.
+
+The Expo `experiments.baseUrl` setting in `app.json` matches the repository path. Change it if deploying to a different path. The workflow can also be started manually from the Actions tab.
 
 ## Limitations and development notes
 
