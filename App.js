@@ -3,6 +3,7 @@ import MyMaterials from './src/MyMaterials';
 import Vocabulary from './src/Vocabulary';
 import FlipCard from './src/FlipCard';
 import Entrance from './src/Entrance';
+import ElementaryMath from './src/ElementaryMath';
 import { SafeAreaView, ScrollView, View, Text, Pressable, StyleSheet, StatusBar } from 'react-native';
 
 const units = [
@@ -32,7 +33,7 @@ export default function App() {
   return <SafeAreaView style={[styles.safe, screen === 'welcome' && styles.safeWelcome]}><StatusBar barStyle={screen === 'welcome' || screen === 'unit' ? 'light-content' : 'dark-content'} backgroundColor={screen === 'welcome' ? '#5030c6' : '#f4f1fa'} />
     <View style={styles.app}>
       <Entrance key={screen} fill>
-      {screen === 'vocabulary' ? <Vocabulary onExit={() => setScreen('library')} /> : screen === 'materials' ? <MyMaterials onExit={() => setScreen('library')} /> : screen === 'welcome' ? <ScrollView style={styles.welcomeScroll} contentContainerStyle={styles.welcomeFrame}><View style={styles.welcome}>
+      {screen === 'math' ? <ElementaryMath onExit={() => setScreen('library')} /> : screen === 'vocabulary' ? <Vocabulary onExit={() => setScreen('library')} /> : screen === 'materials' ? <MyMaterials onExit={() => setScreen('library')} /> : screen === 'welcome' ? <ScrollView style={styles.welcomeScroll} contentContainerStyle={styles.welcomeFrame}><View style={styles.welcome}>
         <View style={styles.welcomeAccent} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"/>
         <View style={styles.welcomeTop}><Brand light /></View>
         <View style={styles.heroArt} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><View style={styles.orbitOne}/><View style={styles.orbitTwo}/><View style={styles.paperBack}/><View style={styles.paper}><Text style={styles.paperStar}>✳</Text><View style={styles.paperLine}/><View style={[styles.paperLine,{width: 48}]}/><View style={[styles.paperLine,{width: 56}]}/></View><View style={styles.floatingStar}><Text style={styles.floatingStarText}>✦</Text></View></View>
@@ -45,8 +46,9 @@ export default function App() {
           <Pressable accessibilityRole="button" accessibilityLabel="Create & study your own materials" onPress={() => setScreen('materials')} style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}><View style={[styles.featureIcon, { backgroundColor: '#ece5fb' }]}><Text style={[styles.featureSymbol, { color: '#5f39c9' }]}>＋</Text></View><Text style={styles.featureTitle}>Your materials</Text><Text style={styles.featureDescription}>Create and study</Text></Pressable>
           <Pressable accessibilityRole="button" accessibilityLabel="Vocabulary · quizzes & word of the day" onPress={() => setScreen('vocabulary')} style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}><View style={[styles.featureIcon, { backgroundColor: '#f8e7ef' }]}><Text style={[styles.featureSymbol, { color: '#98466e' }]}>≡</Text></View><Text style={styles.featureTitle}>Vocabulary</Text><Text style={styles.featureDescription}>Daily word & quizzes</Text></Pressable>
         </View>
-        <View style={styles.sectionHeading}><View><Text style={styles.sectionTitle}>Explore your units</Text></View><Text style={styles.count}>{units.length} UNITS</Text></View>
+        <View style={styles.sectionHeading}><View><Text style={styles.sectionTitle}>Explore your units</Text></View><Text style={styles.count}>{units.length + 1} UNITS</Text></View>
         {units.map((item, index) => <Pressable key={item.title} accessibilityRole="button" accessibilityLabel={`Open unit ${index + 1}: ${item.title}`} onPress={() => openUnit(index)} style={({ pressed }) => [styles.unitCard, { backgroundColor: item.color }, pressed && styles.pressed]}><Text style={styles.unitNumber}>{String(index + 1).padStart(2, '0')}</Text><View style={{ flex: 1 }}><Text style={styles.unitTag}>{item.tag}</Text><Text style={styles.unitTitle}>{item.title}</Text></View><View style={styles.arrowCircle}><Text style={styles.arrowText}>↗</Text></View></Pressable>)}
+        <Pressable accessibilityRole="button" accessibilityLabel="Open unit 5: Elementary Mathematics" onPress={() => setScreen('math')} style={({ pressed }) => [styles.unitCard, { backgroundColor: '#3e527d' }, pressed && styles.pressed]}><Text style={styles.unitNumber}>05</Text><View style={{ flex: 1 }}><Text style={styles.unitTag}>GRADES 1–6</Text><Text style={styles.unitTitle}>Elementary Mathematics</Text></View><View style={styles.arrowCircle}><Text style={styles.arrowText}>↗</Text></View></Pressable>
         <Text style={styles.footnote}>SAMPLE CONTENT  •  MADE FOR PRACTICE</Text>
       </ScrollView> : <><View style={[styles.unitHeader, { backgroundColor: unit.color }]}><View style={styles.unitNav}><Back onPress={() => screen === 'unit' ? setScreen('library') : setScreen('unit')} /><Text style={styles.navLabel}>{screen === 'unit' ? 'YOUR STUDY UNIT' : 'BACK TO UNIT'}</Text></View><Text style={styles.headerEyebrow}>UNIT {String(unitIndex + 1).padStart(2, '0')}  /  {unit.tag}</Text><Text style={styles.headerTitle}>{unit.title}</Text><View style={styles.headerDecor}/></View>
         <ScrollView contentContainerStyle={styles.detailBody}>
