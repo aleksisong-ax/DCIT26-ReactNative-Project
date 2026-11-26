@@ -1,4 +1,4 @@
-// Each lesson uses short examples and one formative practice question.
+// Each lesson includes a visual example and the first practice question.
 export const mathTiers = [
   {
     id: 'primary', title: 'Primary', grades: 'Grades 1–3', description: 'Build concrete foundations with numbers and everyday examples.',

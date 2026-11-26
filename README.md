@@ -10,7 +10,7 @@ StudyPrep is a mobile-first React Native study app for creating and practicing w
 - Create and read notes or reviewers.
 - Delete saved materials with confirmation.
 - Explore the original sample study units, including a flashcard, quiz, reviewer, and summary for each.
-- Study Elementary Mathematics in Primary (Grades 1–3) or Intermediate (Grades 4–6). Each tier has four focus areas with short topic cards, a visual example, and one practice question per area. Practice feedback is not saved.
+- Study Elementary Mathematics in Primary (Grades 1–3) or Intermediate (Grades 4–6). Each tier has four focus areas with short topic cards, a visual example, and 10 practice questions per area. Answers and feedback are kept only while the lesson is open; there is no saved progress or score.
 - Explore a locally selected word of the day and take two five-question dictionary activities: choose a word's meaning or choose the word matching a definition. They use definitions fetched from Free Dictionary API. The word of the day changes with the device's local calendar date and repeats after 16 days; it is not Merriam-Webster's word of the day.
 - Materials are saved locally on the device or in the browser using AsyncStorage; quiz results are not saved.
 
@@ -25,7 +25,7 @@ To create content, enter the app, tap **Your materials**, and choose a material 
 - `src/FlipCard.js`: shared animated flashcard.
 - `src/Entrance.js` and `src/useReducedMotion.js`: reusable entrance transitions and motion-preference handling, using React Native's built-in Animated API.
 - `src/Vocabulary.js`: dictionary-backed word of the day, quiz, and vocabulary test.
-- `src/ElementaryMath.js` and `src/mathLessons.js`: elementary mathematics tier navigation, lesson cards, visuals, and practice content.
+- `src/ElementaryMath.js`, `src/mathLessons.js`, and `src/mathPractice.js`: elementary mathematics navigation, lesson cards, visuals, and practice questions.
 - `app.json`: Expo app metadata, orientation, and GitHub Pages base path.
 - `package.json` and `package-lock.json`: dependencies and npm scripts.
 - `.github/workflows/pages.yml`: GitHub Pages build and deployment.
