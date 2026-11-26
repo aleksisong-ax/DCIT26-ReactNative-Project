@@ -22,7 +22,7 @@ const units = [
   {
     title: 'Learning how to learn',
     tag: 'The essentials',
-    color: '#6842d8',
+    color: '#6842c8',
     accent: '#a890f4',
     fact: 'Active recall means retrieving information from memory rather than simply rereading it.',
     question: 'Which method asks you to retrieve information from memory?',
@@ -34,7 +34,7 @@ const units = [
   {
     title: 'Building better habits',
     tag: 'Study routine',
-    color: '#bd6fa2',
+    color: '#995078',
     accent: '#efb6d4',
     fact: 'A consistent study routine makes it easier to practice regularly.',
     question: 'What can help you study more consistently?',
@@ -58,7 +58,7 @@ const units = [
   {
     title: 'Remembering more',
     tag: 'Memory tools',
-    color: '#c77842',
+    color: '#9a4e22',
     accent: '#f1ba94',
     fact: 'Spaced repetition means reviewing material at intervals over time.',
     question: 'What is spaced repetition?',
@@ -106,7 +106,7 @@ function Brand({ light = false }: { light?: boolean }) {
   return (
     <div className={`brand ${light ? 'brand-light' : ''}`}>
       <span className="brand-mark"><Icon name="spark" size={18} /></span>
-      <span>prepcrux<span className="brand-dot">.</span></span>
+      <span>StudyPrep<span className="brand-dot">.</span></span>
     </div>
   )
 }
@@ -126,7 +126,7 @@ function App() {
   const [choice, setChoice] = useState<number | null>(null)
   const [materials, setMaterials] = useState<Material[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem('prepcrux-materials') || '[]')
+      return JSON.parse(localStorage.getItem('studyprep-materials') || localStorage.getItem('prepcrux-materials') || '[]')
     } catch {
       return []
     }
@@ -134,7 +134,7 @@ function App() {
   const unit = units[unitIndex]
 
   useEffect(() => {
-    localStorage.setItem('prepcrux-materials', JSON.stringify(materials))
+    localStorage.setItem('studyprep-materials', JSON.stringify(materials))
   }, [materials])
 
   const openUnit = (index: number) => {
