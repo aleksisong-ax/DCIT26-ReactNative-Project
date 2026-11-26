@@ -93,9 +93,9 @@ export default function MyMaterials({ onExit }) {
     else if (page === 'result') setPage('detail');
     else setPage('list');
   }
-  return <View style={styles.container}><Header title={page === 'list' ? 'My materials' : page === 'create' ? `New ${kind === 'flashcards' ? 'flashcard deck' : kind === 'notes' ? 'notes' : 'quiz'}` : selected?.title || 'My materials'} subtitle={page === 'list' ? 'Create and study your materials.' : page === 'create' ? 'Your work stays on this device.' : ''} back={back}/>
+  return <View style={styles.container}><Header title={page === 'list' ? 'My materials' : page === 'create' ? `New ${kind === 'flashcards' ? 'flashcard deck' : kind === 'notes' ? 'notes' : 'quiz'}` : selected?.title || 'My materials'} subtitle={page === 'create' ? 'Your work stays on this device.' : ''} back={back}/>
     <Entrance key={page} fill><ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
-      {page === 'list' && <><Text style={styles.eyebrow}>CREATE</Text><Text style={styles.heading}>Create study material</Text><Text style={styles.intro}>Make quizzes, flashcards and notes, then study at your own pace.</Text>
+      {page === 'list' && <><Text style={styles.heading}>Create study material</Text><Text style={styles.intro}>Make quizzes, flashcards and notes, then study at your own pace.</Text>
         {storageError ? <Text accessibilityRole="alert" style={styles.error}>{storageError}</Text> : null}
         <View style={styles.createRow}><Action label="+ Quiz" onPress={() => startCreate('quiz')} disabled={loading || !!storageError}/><Action label="+ Flashcards" onPress={() => startCreate('flashcards')} disabled={loading || !!storageError}/><Action label="+ Notes" onPress={() => startCreate('notes')} disabled={loading || !!storageError}/></View>
         <Text style={[styles.heading, { marginTop: 32 }]}>Your collection</Text><Text style={styles.intro}>{loading ? 'Loading your materials…' : materials.length ? 'Tap an item to study it.' : 'Nothing here yet. Create your first study material above.'}</Text>
