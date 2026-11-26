@@ -13,7 +13,7 @@ PrepCrux is a mobile-first React Native study app for creating and practicing wi
 - Explore a locally selected word of the day and take two five-question dictionary activities: choose a word's meaning or choose the word matching a definition. They use definitions fetched from Free Dictionary API. The word of the day changes with the device's local calendar date and repeats after 16 days; it is not Merriam-Webster's word of the day.
 - Materials are saved locally on the device or in the browser using AsyncStorage; quiz results are not saved.
 
-To create content, enter the app, tap **Create & study your own materials**, and choose a material type. Tap a saved item in **Your collection** to study it.
+To create content, enter the app, tap **Your materials**, and choose a material type. Tap a saved item in **Your collection** to study it.
 
 ## Stack and structure
 
