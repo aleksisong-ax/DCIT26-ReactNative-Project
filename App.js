@@ -19,7 +19,7 @@ function Back({ onPress }) {
   return <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={onPress} style={styles.back}><Text style={styles.backText}>‹</Text></Pressable>;
 }
 function Brand({ light = false }) {
-  return <View style={styles.brand}><View style={[styles.brandIcon, light && styles.brandIconLight]}><Text style={[styles.brandMark, light && { color: '#5722d5' }]}>✳</Text></View><Text style={[styles.brandName, light && { color: '#fff' }]}>prepcrux<Text style={{ color: light ? '#d7b7ff' : '#a670e7' }}>.</Text></Text></View>;
+  return <View style={styles.brand}><View style={[styles.brandIcon, light && styles.brandIconLight]}><Text style={[styles.brandMark, light && { color: '#5722d5' }]}>✳</Text></View><Text style={[styles.brandName, light && { color: '#fff' }]}>StudyPrep<Text style={{ color: light ? '#d7b7ff' : '#a670e7' }}>.</Text></Text></View>;
 }
 export default function App() {
   const [screen, setScreen] = useState('welcome');

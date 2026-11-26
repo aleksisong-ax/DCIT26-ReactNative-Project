@@ -1,6 +1,6 @@
-# PrepCrux
+# StudyPrep
 
-PrepCrux is a mobile-first React Native study app for creating and practicing with learning materials. It also includes four sample study units.
+StudyPrep is a mobile-first React Native study app for creating and practicing with learning materials. It also includes four sample study units.
 
 ## Features
 
@@ -48,7 +48,7 @@ There are currently no project-specific environment variables or secrets.
 
 ## Storage, APIs, and deployment
 
-Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There is no app backend, server database, or account system.
+Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. The legacy key and Expo slug are retained to avoid disrupting existing data and project identity. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There is no app backend, server database, or account system.
 
 The vocabulary activities fetch English definitions from `https://freedictionaryapi.com/api/v1/entries/en/{word}` and require an internet connection. Word selections come from a curated 16-word list in `src/Vocabulary.js`, and the first available definition is used. The activity displays links to source entries, attribution, and license information. Definitions are from Wiktionary contributors, provided by [Free Dictionary API](https://freedictionaryapi.com/), and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Definitions are selected and formatted for the activity; their source entries and contributor histories are linked in the app. No Merriam-Webster content is used.
 
