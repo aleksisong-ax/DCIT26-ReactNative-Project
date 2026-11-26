@@ -4,62 +4,731 @@ import Vocabulary from './src/Vocabulary';
 import FlipCard from './src/FlipCard';
 import Entrance from './src/Entrance';
 import ElementaryMath from './src/ElementaryMath';
-import { SafeAreaView, ScrollView, View, Text, Pressable, StyleSheet, StatusBar } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
 
-const units = [
-  { title: 'Learning how to learn', tag: 'THE ESSENTIALS', color: '#6842c8', fact: 'Active recall means retrieving information from memory rather than simply rereading it.', question: 'Which method asks you to retrieve information from memory?', options: ['Active recall', 'Passive rereading', 'Highlighting'], answer: 0, summary: 'Active recall and spaced repetition help make study sessions more effective. Test yourself, then revisit ideas over time.' },
-  { title: 'Building better habits', tag: 'STUDY ROUTINE', color: '#995078', fact: 'A consistent study routine makes it easier to practice regularly.', question: 'What can help you study more consistently?', options: ['A regular routine', 'Skipping practice', 'Studying only once'], answer: 0, summary: 'Small, consistent study sessions can be easier to maintain than occasional long sessions.' },
-  { title: 'Focus & productivity', tag: 'STAY ON TRACK', color: '#1f7180', fact: 'Removing distractions can help you focus on the task in front of you.', question: 'Which can support focused study?', options: ['More notifications', 'Fewer distractions', 'Multitasking constantly'], answer: 1, summary: 'Choose a clear task, reduce distractions, and take breaks when needed.' },
-  { title: 'Remembering more', tag: 'MEMORY TOOLS', color: '#9a4e22', fact: 'Spaced repetition means reviewing material at intervals over time.', question: 'What is spaced repetition?', options: ['Reviewing at intervals', 'Reading once', 'Avoiding practice'], answer: 0, summary: 'Reviewing ideas over time gives you repeated opportunities to recall them.' },
+const sampleUnits = [
+  {
+    title: 'Learning how to learn',
+    tag: 'THE ESSENTIALS',
+    color: '#6842c8',
+    fact: 'Active recall means retrieving information from memory rather than simply rereading it.',
+    question: 'Which method asks you to retrieve information from memory?',
+    options: ['Active recall', 'Passive rereading', 'Highlighting'],
+    answer: 0,
+    summary:
+      'Active recall and spaced repetition help make study sessions more effective. Test yourself, then revisit ideas over time.',
+  },
+  {
+    title: 'Building better habits',
+    tag: 'STUDY ROUTINE',
+    color: '#995078',
+    fact: 'A consistent study routine makes it easier to practice regularly.',
+    question: 'What can help you study more consistently?',
+    options: ['A regular routine', 'Skipping practice', 'Studying only once'],
+    answer: 0,
+    summary:
+      'Small, consistent study sessions can be easier to maintain than occasional long sessions.',
+  },
+  {
+    title: 'Focus & productivity',
+    tag: 'STAY ON TRACK',
+    color: '#1f7180',
+    fact: 'Removing distractions can help you focus on the task in front of you.',
+    question: 'Which can support focused study?',
+    options: ['More notifications', 'Fewer distractions', 'Multitasking constantly'],
+    answer: 1,
+    summary: 'Choose a clear task, reduce distractions, and take breaks when needed.',
+  },
+  {
+    title: 'Remembering more',
+    tag: 'MEMORY TOOLS',
+    color: '#9a4e22',
+    fact: 'Spaced repetition means reviewing material at intervals over time.',
+    question: 'What is spaced repetition?',
+    options: ['Reviewing at intervals', 'Reading once', 'Avoiding practice'],
+    answer: 0,
+    summary: 'Reviewing ideas over time gives you repeated opportunities to recall them.',
+  },
+];
+
+const unitActivities = [
+  {
+    icon: '✦',
+    title: 'Flashcard',
+    description: 'Flip to reveal a key idea',
+    screen: 'flashcard',
+    backgroundColor: '#ece5fb',
+    iconColor: '#5e38c7',
+  },
+  {
+    icon: '✓',
+    title: 'Quick quiz',
+    description: 'Put your knowledge to the test',
+    screen: 'quiz',
+    backgroundColor: '#f8e7ef',
+    iconColor: '#97476c',
+  },
+  {
+    icon: '≡',
+    title: 'Reviewer',
+    description: 'Get to know the essentials',
+    screen: 'reviewer',
+    backgroundColor: '#e0f1f1',
+    iconColor: '#216e7a',
+  },
+  {
+    icon: '✳',
+    title: 'Summary',
+    description: 'The big idea, in a nutshell',
+    screen: 'summary',
+    backgroundColor: '#faeadf',
+    iconColor: '#9b4d1f',
+  },
 ];
 
 function Button({ label, onPress, secondary = false, style }) {
-  return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.button, secondary && styles.buttonSecondary, style, pressed && styles.pressed]}><Text style={[styles.buttonText, secondary && styles.secondaryText]}>{label}</Text></Pressable>;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        secondary && styles.buttonSecondary,
+        style,
+        pressed && styles.pressed,
+      ]}
+    >
+      <Text style={[styles.buttonText, secondary && styles.secondaryText]}>{label}</Text>
+    </Pressable>
+  );
 }
 function Back({ onPress }) {
-  return <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={onPress} style={styles.back}><Text style={styles.backText}>‹</Text></Pressable>;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Go back"
+      onPress={onPress}
+      style={styles.back}
+    >
+      <Text style={styles.backText}>‹</Text>
+    </Pressable>
+  );
 }
 function Brand({ light = false }) {
-  return <View style={styles.brand}><View style={[styles.brandIcon, light && styles.brandIconLight]}><Text style={[styles.brandMark, light && { color: '#5722d5' }]}>✳</Text></View><Text style={[styles.brandName, light && { color: '#fff' }]}>StudyPrep<Text style={{ color: light ? '#d7b7ff' : '#a670e7' }}>.</Text></Text></View>;
+  return (
+    <View style={styles.brand}>
+      <View style={[styles.brandIcon, light && styles.brandIconLight]}>
+        <Text style={[styles.brandMark, light && { color: '#5722d5' }]}>✳</Text>
+      </View>
+      <Text style={[styles.brandName, light && { color: '#fff' }]}>
+        StudyPrep<Text style={{ color: light ? '#d7b7ff' : '#a670e7' }}>.</Text>
+      </Text>
+    </View>
+  );
 }
 export default function App() {
   const [screen, setScreen] = useState('welcome');
   const [unitIndex, setUnitIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [choice, setChoice] = useState(null);
-  const unit = units[unitIndex];
-  function openUnit(index) { setUnitIndex(index); setFlipped(false); setChoice(null); setScreen('unit'); }
-  function openActivity(name) { setFlipped(false); setChoice(null); setScreen(name); }
-  return <SafeAreaView style={[styles.safe, screen === 'welcome' && styles.safeWelcome]}><StatusBar barStyle={screen === 'welcome' || screen === 'unit' ? 'light-content' : 'dark-content'} backgroundColor={screen === 'welcome' ? '#5030c6' : '#f4f1fa'} />
-    <View style={styles.app}>
-      <Entrance key={screen} fill>
-      {screen === 'math' ? <ElementaryMath onExit={() => setScreen('library')} /> : screen === 'vocabulary' ? <Vocabulary onExit={() => setScreen('library')} /> : screen === 'materials' ? <MyMaterials onExit={() => setScreen('library')} /> : screen === 'welcome' ? <ScrollView style={styles.welcomeScroll} contentContainerStyle={styles.welcomeFrame}><View style={styles.welcome}>
-        <View style={styles.welcomeAccent} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"/>
-        <View style={styles.welcomeTop}><Brand light /></View>
-        <View style={styles.heroArt} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><View style={styles.orbitOne}/><View style={styles.orbitTwo}/><View style={styles.paperBack}/><View style={styles.paper}><Text style={styles.paperStar}>✳</Text><View style={styles.paperLine}/><View style={[styles.paperLine,{width: 48}]}/><View style={[styles.paperLine,{width: 56}]}/></View><View style={styles.floatingStar}><Text style={styles.floatingStarText}>✦</Text></View></View>
-        <View style={styles.welcomeCopy}><Text style={styles.heroTitle}>Study smarter.{'\n'}Remember <Text style={styles.lavender}>more.</Text></Text><Text style={styles.heroDescription}>Create quizzes, flashcards, and notes that make every study session count.</Text></View>
-        <View style={styles.welcomeBottom}><Button label="Let's get started  →" onPress={() => setScreen('library')} style={styles.whiteButton}/></View>
-      </View></ScrollView> : screen === 'library' ? <ScrollView contentContainerStyle={styles.page}>
-        <View style={styles.libraryHeader}><Brand /></View>
-        <Text style={styles.pageTitle}>Study materials</Text><Text style={styles.subtitle}>Create your own materials or explore a sample unit.</Text>
-        <View style={styles.featureGrid}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Create & study your own materials" onPress={() => setScreen('materials')} style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}><View style={[styles.featureIcon, { backgroundColor: '#ece5fb' }]}><Text style={[styles.featureSymbol, { color: '#5f39c9' }]}>＋</Text></View><Text style={styles.featureTitle}>Your materials</Text><Text style={styles.featureDescription}>Create and study</Text></Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="Vocabulary · quizzes & word of the day" onPress={() => setScreen('vocabulary')} style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}><View style={[styles.featureIcon, { backgroundColor: '#f8e7ef' }]}><Text style={[styles.featureSymbol, { color: '#98466e' }]}>≡</Text></View><Text style={styles.featureTitle}>Vocabulary</Text><Text style={styles.featureDescription}>Daily word & quizzes</Text></Pressable>
-        </View>
-        <View style={styles.sectionHeading}><View><Text style={styles.sectionTitle}>Explore your units</Text></View><Text style={styles.count}>{units.length + 1} UNITS</Text></View>
-        {units.map((item, index) => <Pressable key={item.title} accessibilityRole="button" accessibilityLabel={`Open unit ${index + 1}: ${item.title}`} onPress={() => openUnit(index)} style={({ pressed }) => [styles.unitCard, { backgroundColor: item.color }, pressed && styles.pressed]}><Text style={styles.unitNumber}>{String(index + 1).padStart(2, '0')}</Text><View style={{ flex: 1 }}><Text style={styles.unitTag}>{item.tag}</Text><Text style={styles.unitTitle}>{item.title}</Text></View><View style={styles.arrowCircle}><Text style={styles.arrowText}>↗</Text></View></Pressable>)}
-        <Pressable accessibilityRole="button" accessibilityLabel="Open unit 5: Elementary Mathematics" onPress={() => setScreen('math')} style={({ pressed }) => [styles.unitCard, { backgroundColor: '#3e527d' }, pressed && styles.pressed]}><Text style={styles.unitNumber}>05</Text><View style={{ flex: 1 }}><Text style={styles.unitTag}>GRADES 1–6</Text><Text style={styles.unitTitle}>Elementary Mathematics</Text></View><View style={styles.arrowCircle}><Text style={styles.arrowText}>↗</Text></View></Pressable>
-        <Text style={styles.footnote}>SAMPLE CONTENT  •  MADE FOR PRACTICE</Text>
-      </ScrollView> : <><View style={[styles.unitHeader, { backgroundColor: unit.color }]}><View style={styles.unitNav}><Back onPress={() => screen === 'unit' ? setScreen('library') : setScreen('unit')} /><Text style={styles.navLabel}>{screen === 'unit' ? 'YOUR STUDY UNIT' : 'BACK TO UNIT'}</Text></View><Text style={styles.headerEyebrow}>UNIT {String(unitIndex + 1).padStart(2, '0')}  /  {unit.tag}</Text><Text style={styles.headerTitle}>{unit.title}</Text><View style={styles.headerDecor}/></View>
-        <ScrollView contentContainerStyle={styles.detailBody}>
-          {screen === 'unit' ? <><Text style={styles.sectionTitle}>Choose how to study</Text><View style={[styles.activityList, { marginTop: 20 }]}>
-            {[['✦','Flashcard','Flip to reveal a key idea','flashcard'],['✓','Quick quiz','Put your knowledge to the test','quiz'],['≡','Reviewer','Get to know the essentials','reviewer'],['✳','Summary','The big idea, in a nutshell','summary']].map(([icon,title,description,target], i) => <Pressable key={target} accessibilityRole="button" accessibilityLabel={title} onPress={() => openActivity(target)} style={({pressed}) => [styles.activity, pressed && styles.pressed]}><View style={[styles.activityIcon, {backgroundColor: ['#ece5fb', '#f8e7ef', '#e0f1f1', '#faeadf'][i]}]}><Text style={[styles.activityIconText, { color: ['#5e38c7', '#97476c', '#216e7a', '#9b4d1f'][i] }]}>{icon}</Text></View><View style={styles.activityText}><Text style={styles.activityTitle}>{title}</Text><Text style={styles.activityDescription}>{description}</Text></View><Text style={styles.activityArrow}>↗</Text></Pressable>)}
-          </View></> : screen === 'flashcard' ? <><Text style={styles.eyebrow}>FLASHCARD  /  01 OF 01</Text><Text style={styles.sectionTitle}>Let's remember this.</Text><View style={{ height: 20 }}/><FlipCard flipped={flipped} onFlip={() => setFlipped(value => !value)} front={`What's one key idea from ${unit.title.toLowerCase()}?`} back={unit.fact} frontLabel="QUICK QUESTION" backLabel="THE IDEA" cardStyle={styles.flashcard} labelStyle={styles.flashLabel} textStyle={styles.flashText} hintStyle={styles.flashHint}/></> : screen === 'quiz' ? <><Text style={styles.eyebrow}>QUICK QUIZ  /  01 OF 01</Text><Text style={styles.sectionTitle}>Give it a try.</Text><Text style={styles.question}>{unit.question}</Text>{unit.options.map((option,i) => <Pressable key={option} accessibilityRole="button" accessibilityState={{selected: choice === i}} onPress={() => setChoice(i)} style={[styles.option, choice === i && styles.optionSelected]}><Text style={[styles.optionText, choice === i && styles.optionSelectedText]}>{String.fromCharCode(65+i)}.  {option}</Text></Pressable>)}{choice !== null && <Entrance><Text accessibilityLiveRegion="polite" style={styles.feedback}>{choice === unit.answer ? '✦  That’s right! Nice work.' : 'Not quite. Try another answer.'}</Text></Entrance>}</> : <><Text style={styles.eyebrow}>{screen === 'reviewer' ? 'REVIEWER' : 'THE SHORT VERSION'}</Text><Text style={styles.sectionTitle}>{screen === 'reviewer' ? 'The essentials.' : 'In a nutshell.'}</Text><View style={styles.readingCard}><Text style={styles.readingLabel}>✦  {unit.tag}</Text><Text style={styles.readingText}>{screen === 'reviewer' ? unit.fact : unit.summary}</Text></View></>}
-        </ScrollView></>}
-      </Entrance>
-    </View>
-  </SafeAreaView>;
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const selectedUnit = sampleUnits[unitIndex];
+
+  function openUnit(unitPosition) {
+    setUnitIndex(unitPosition);
+    setFlipped(false);
+    setSelectedAnswer(null);
+    setScreen('unit');
+  }
+  function openActivity(screenName) {
+    setFlipped(false);
+    setSelectedAnswer(null);
+    setScreen(screenName);
+  }
+  return (
+    <SafeAreaView style={[styles.safe, screen === 'welcome' && styles.safeWelcome]}>
+      <StatusBar
+        barStyle={screen === 'welcome' || screen === 'unit' ? 'light-content' : 'dark-content'}
+        backgroundColor={screen === 'welcome' ? '#5030c6' : '#f4f1fa'}
+      />
+      <View style={styles.app}>
+        <Entrance key={screen} fill>
+          {screen === 'math' ? (
+            <ElementaryMath onExit={() => setScreen('library')} />
+          ) : screen === 'vocabulary' ? (
+            <Vocabulary onExit={() => setScreen('library')} />
+          ) : screen === 'materials' ? (
+            <MyMaterials onExit={() => setScreen('library')} />
+          ) : screen === 'welcome' ? (
+            <ScrollView style={styles.welcomeScroll} contentContainerStyle={styles.welcomeFrame}>
+              <View style={styles.welcome}>
+                <View
+                  style={styles.welcomeAccent}
+                  pointerEvents="none"
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                />
+                <View style={styles.welcomeTop}>
+                  <Brand light />
+                </View>
+                <View
+                  style={styles.heroArt}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                >
+                  <View style={styles.orbitOne} />
+                  <View style={styles.orbitTwo} />
+                  <View style={styles.paperBack} />
+                  <View style={styles.paper}>
+                    <Text style={styles.paperStar}>✳</Text>
+                    <View style={styles.paperLine} />
+                    <View style={[styles.paperLine, { width: 48 }]} />
+                    <View style={[styles.paperLine, { width: 56 }]} />
+                  </View>
+                  <View style={styles.floatingStar}>
+                    <Text style={styles.floatingStarText}>✦</Text>
+                  </View>
+                </View>
+                <View style={styles.welcomeCopy}>
+                  <Text style={styles.heroTitle}>
+                    Study smarter.{'\n'}Remember <Text style={styles.lavender}>more.</Text>
+                  </Text>
+                  <Text style={styles.heroDescription}>
+                    Create quizzes, flashcards, and notes that make every study session count.
+                  </Text>
+                </View>
+                <View style={styles.welcomeBottom}>
+                  <Button
+                    label="Let's get started  →"
+                    onPress={() => setScreen('library')}
+                    style={styles.whiteButton}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          ) : screen === 'library' ? (
+            <ScrollView contentContainerStyle={styles.page}>
+              <View style={styles.libraryHeader}>
+                <Brand />
+              </View>
+              <Text style={styles.pageTitle}>Study materials</Text>
+              <Text style={styles.subtitle}>
+                Create your own materials or explore a sample unit.
+              </Text>
+              <View style={styles.featureGrid}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Create & study your own materials"
+                  onPress={() => setScreen('materials')}
+                  style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}
+                >
+                  <View style={[styles.featureIcon, { backgroundColor: '#ece5fb' }]}>
+                    <Text style={[styles.featureSymbol, { color: '#5f39c9' }]}>＋</Text>
+                  </View>
+                  <Text style={styles.featureTitle}>Your materials</Text>
+                  <Text style={styles.featureDescription}>Create and study</Text>
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Vocabulary · quizzes & word of the day"
+                  onPress={() => setScreen('vocabulary')}
+                  style={({ pressed }) => [styles.featureCard, pressed && styles.pressed]}
+                >
+                  <View style={[styles.featureIcon, { backgroundColor: '#f8e7ef' }]}>
+                    <Text style={[styles.featureSymbol, { color: '#98466e' }]}>≡</Text>
+                  </View>
+                  <Text style={styles.featureTitle}>Vocabulary</Text>
+                  <Text style={styles.featureDescription}>Daily word & quizzes</Text>
+                </Pressable>
+              </View>
+              <View style={styles.sectionHeading}>
+                <View>
+                  <Text style={styles.sectionTitle}>Explore your units</Text>
+                </View>
+                <Text style={styles.count}>{sampleUnits.length + 1} UNITS</Text>
+              </View>
+              {sampleUnits.map((sampleUnit, unitPosition) => (
+                <Pressable
+                  key={sampleUnit.title}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Open unit ${unitPosition + 1}: ${sampleUnit.title}`}
+                  onPress={() => openUnit(unitPosition)}
+                  style={({ pressed }) => [
+                    styles.unitCard,
+                    { backgroundColor: sampleUnit.color },
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={styles.unitNumber}>{String(unitPosition + 1).padStart(2, '0')}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.unitTag}>{sampleUnit.tag}</Text>
+                    <Text style={styles.unitTitle}>{sampleUnit.title}</Text>
+                  </View>
+                  <View style={styles.arrowCircle}>
+                    <Text style={styles.arrowText}>↗</Text>
+                  </View>
+                </Pressable>
+              ))}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Open unit 5: Elementary Mathematics"
+                onPress={() => setScreen('math')}
+                style={({ pressed }) => [
+                  styles.unitCard,
+                  { backgroundColor: '#3e527d' },
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text style={styles.unitNumber}>05</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.unitTag}>GRADES 1–6</Text>
+                  <Text style={styles.unitTitle}>Elementary Mathematics</Text>
+                </View>
+                <View style={styles.arrowCircle}>
+                  <Text style={styles.arrowText}>↗</Text>
+                </View>
+              </Pressable>
+              <Text style={styles.footnote}>SAMPLE CONTENT • MADE FOR PRACTICE</Text>
+            </ScrollView>
+          ) : (
+            <>
+              <View style={[styles.unitHeader, { backgroundColor: selectedUnit.color }]}>
+                <View style={styles.unitNav}>
+                  <Back
+                    onPress={() => (screen === 'unit' ? setScreen('library') : setScreen('unit'))}
+                  />
+                  <Text style={styles.navLabel}>
+                    {screen === 'unit' ? 'YOUR STUDY UNIT' : 'BACK TO UNIT'}
+                  </Text>
+                </View>
+                <Text style={styles.headerEyebrow}>
+                  UNIT {String(unitIndex + 1).padStart(2, '0')} / {selectedUnit.tag}
+                </Text>
+                <Text style={styles.headerTitle}>{selectedUnit.title}</Text>
+                <View style={styles.headerDecor} />
+              </View>
+              <ScrollView contentContainerStyle={styles.detailBody}>
+                {screen === 'unit' ? (
+                  <>
+                    <Text style={styles.sectionTitle}>Choose how to study</Text>
+                    <View style={[styles.activityList, { marginTop: 20 }]}>
+                      {unitActivities.map((activity) => (
+                        <Pressable
+                          key={activity.screen}
+                          accessibilityRole="button"
+                          accessibilityLabel={activity.title}
+                          onPress={() => openActivity(activity.screen)}
+                          style={({ pressed }) => [styles.activity, pressed && styles.pressed]}
+                        >
+                          <View
+                            style={[
+                              styles.activityIcon,
+                              { backgroundColor: activity.backgroundColor },
+                            ]}
+                          >
+                            <Text style={[styles.activityIconText, { color: activity.iconColor }]}>
+                              {activity.icon}
+                            </Text>
+                          </View>
+                          <View style={styles.activityText}>
+                            <Text style={styles.activityTitle}>{activity.title}</Text>
+                            <Text style={styles.activityDescription}>{activity.description}</Text>
+                          </View>
+                          <Text style={styles.activityArrow}>↗</Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </>
+                ) : screen === 'flashcard' ? (
+                  <>
+                    <Text style={styles.eyebrow}>FLASHCARD / 01 OF 01</Text>
+                    <Text style={styles.sectionTitle}>Let's remember this.</Text>
+                    <View style={{ height: 20 }} />
+                    <FlipCard
+                      flipped={flipped}
+                      onFlip={() => setFlipped((value) => !value)}
+                      front={`What's one key idea from ${selectedUnit.title.toLowerCase()}?`}
+                      back={selectedUnit.fact}
+                      frontLabel="QUICK QUESTION"
+                      backLabel="THE IDEA"
+                      cardStyle={styles.flashcard}
+                      labelStyle={styles.flashLabel}
+                      textStyle={styles.flashText}
+                      hintStyle={styles.flashHint}
+                    />
+                  </>
+                ) : screen === 'quiz' ? (
+                  <>
+                    <Text style={styles.eyebrow}>QUICK QUIZ / 01 OF 01</Text>
+                    <Text style={styles.sectionTitle}>Give it a try.</Text>
+                    <Text style={styles.question}>{selectedUnit.question}</Text>
+                    {selectedUnit.options.map((option, optionIndex) => (
+                      <Pressable
+                        key={option}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: selectedAnswer === optionIndex }}
+                        onPress={() => setSelectedAnswer(optionIndex)}
+                        style={[
+                          styles.option,
+                          selectedAnswer === optionIndex && styles.optionSelected,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.optionText,
+                            selectedAnswer === optionIndex && styles.optionSelectedText,
+                          ]}
+                        >
+                          {String.fromCharCode(65 + optionIndex)}. {option}
+                        </Text>
+                      </Pressable>
+                    ))}
+                    {selectedAnswer !== null && (
+                      <Entrance>
+                        <Text accessibilityLiveRegion="polite" style={styles.feedback}>
+                          {selectedAnswer === selectedUnit.answer
+                            ? '✦  That’s right! Nice work.'
+                            : 'Not quite. Try another answer.'}
+                        </Text>
+                      </Entrance>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.eyebrow}>
+                      {screen === 'reviewer' ? 'REVIEWER' : 'THE SHORT VERSION'}
+                    </Text>
+                    <Text style={styles.sectionTitle}>
+                      {screen === 'reviewer' ? 'The essentials.' : 'In a nutshell.'}
+                    </Text>
+                    <View style={styles.readingCard}>
+                      <Text style={styles.readingLabel}>✦ {selectedUnit.tag}</Text>
+                      <Text style={styles.readingText}>
+                        {screen === 'reviewer' ? selectedUnit.fact : selectedUnit.summary}
+                      </Text>
+                    </View>
+                  </>
+                )}
+              </ScrollView>
+            </>
+          )}
+        </Entrance>
+      </View>
+    </SafeAreaView>
+  );
 }
 const styles = StyleSheet.create({
- safe:{flex:1,backgroundColor:'#f4f1fa'},safeWelcome:{backgroundColor:'#5030c6'},app:{flex:1,width:'100%',maxWidth:540,alignSelf:'center',backgroundColor:'#fff',overflow:'hidden'},welcomeScroll:{flex:1,backgroundColor:'#5030c6'},welcomeFrame:{flexGrow:1},welcome:{flexGrow:1,width:'100%',minHeight:525,backgroundColor:'#5030c6',paddingHorizontal:24,paddingTop:22,paddingBottom:30,justifyContent:'space-between',overflow:'hidden'},welcomeAccent:{position:'absolute',width:290,height:290,borderRadius:145,backgroundColor:'#6545d1',right:-98,bottom:-142},welcomeTop:{flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brand:{flexDirection:'row',alignItems:'center',gap:8},brandIcon:{width:31,height:31,borderRadius:10,backgroundColor:'#5d28dc',alignItems:'center',justifyContent:'center'},brandIconLight:{backgroundColor:'#fff'},brandMark:{fontSize:22,color:'#fff',fontWeight:'800'},brandName:{fontSize:20,fontWeight:'800',letterSpacing:-1,color:'#23133f'},heroArt:{height:210,alignItems:'center',justifyContent:'center'},orbitOne:{position:'absolute',width:190,height:190,borderRadius:95,borderWidth:1,borderColor:'#8163dc'},orbitTwo:{position:'absolute',width:150,height:150,borderRadius:75,backgroundColor:'#6745d3'},paperBack:{position:'absolute',width:100,height:130,borderRadius:16,backgroundColor:'#b69bed',transform:[{rotate:'-17deg'},{translateX:-14}]},paper:{width:104,height:135,borderRadius:16,backgroundColor:'#fff',padding:19,transform:[{rotate:'9deg'}],justifyContent:'center',gap:8},paperStar:{fontSize:30,color:'#6033df',marginBottom:8},paperLine:{height:4,width:66,borderRadius:4,backgroundColor:'#e7def4'},floatingStar:{position:'absolute',right:'15%',top:25,width:40,height:40,borderRadius:12,backgroundColor:'#dcaaf1',alignItems:'center',justifyContent:'center',transform:[{rotate:'12deg'}]},floatingStarText:{fontSize:22,color:'#5b21d8'},welcomeCopy:{gap:15},heroTitle:{fontSize:35,lineHeight:39,fontWeight:'800',letterSpacing:-1.5,color:'#fff'},lavender:{color:'#d9b9ff'},heroDescription:{fontSize:13,lineHeight:20,color:'#e5dcff',maxWidth:300},welcomeBottom:{gap:17},button:{backgroundColor:'#5a22dd',minHeight:56,borderRadius:18,alignItems:'center',justifyContent:'center',paddingHorizontal:20},whiteButton:{backgroundColor:'#fff',minHeight:48,borderRadius:13},buttonText:{fontWeight:'800',fontSize:14,color:'#5420d0'},buttonSecondary:{backgroundColor:'#f2edfc'},secondaryText:{color:'#5420d0'},pressed:{opacity:.76},page:{paddingHorizontal:26,paddingTop:26,paddingBottom:30},libraryHeader:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:42},eyebrow:{fontSize:10,fontWeight:'800',letterSpacing:1.5,color:'#8f7cae',marginBottom:9},pageTitle:{fontSize:35,lineHeight:41,letterSpacing:-1.5,fontWeight:'800',color:'#24143d'},subtitle:{fontSize:14,color:'#8c829c',marginTop:11},featureGrid:{flexDirection:'row',gap:10,marginTop:23},featureCard:{flex:1,minHeight:122,borderWidth:1,borderColor:'#eee9f3',borderRadius:17,backgroundColor:'#faf9fc',padding:14,alignItems:'flex-start'},featureIcon:{height:42,width:42,borderRadius:13,alignItems:'center',justifyContent:'center',marginBottom:10},featureSymbol:{fontSize:24,fontWeight:'700'},featureTitle:{fontSize:14,fontWeight:'800',color:'#302442'},featureDescription:{fontSize:11,lineHeight:16,marginTop:4,color:'#6f627b'},sectionHeading:{marginTop:29,marginBottom:17,flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between'},sectionTitle:{fontSize:23,fontWeight:'800',letterSpacing:-.6,color:'#24143d'},count:{fontSize:10,fontWeight:'800',color:'#aa9dbb',letterSpacing:1},unitNumber:{fontSize:10,fontWeight:'800',color:'#f0e8f6',width:34},unitCard:{borderRadius:16,paddingHorizontal:19,paddingVertical:18,marginBottom:11,flexDirection:'row',justifyContent:'space-between',alignItems:'center',minHeight:78},unitTag:{fontSize:9,fontWeight:'800',color:'#f1eaf5',letterSpacing:1},unitTitle:{fontSize:16,fontWeight:'800',color:'#fff',marginTop:7},arrowCircle:{borderWidth:1,borderColor:'#b998f0',width:32,height:32,borderRadius:16,alignItems:'center',justifyContent:'center'},arrowText:{color:'#fff',fontSize:17},footnote:{textAlign:'center',fontSize:9,letterSpacing:1.2,color:'#b1a6c0',fontWeight:'700',marginTop:20},unitHeader:{backgroundColor:'#5921db',paddingHorizontal:26,paddingTop:22,paddingBottom:35,borderBottomRightRadius:38,overflow:'hidden'},unitNav:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginBottom:34},back:{width:37,height:37,borderRadius:19,backgroundColor:'#7445e5',alignItems:'center',justifyContent:'center'},backText:{color:'#fff',fontSize:31,lineHeight:33},navLabel:{fontSize:10,fontWeight:'800',letterSpacing:1.4,color:'#ede4ff'},headerEyebrow:{fontSize:10,fontWeight:'800',letterSpacing:1.3,color:'#d4bfff',marginBottom:9},headerTitle:{fontSize:30,lineHeight:35,fontWeight:'800',letterSpacing:-1,color:'#fff',maxWidth:'85%'},headerDecor:{position:'absolute',width:125,height:125,borderRadius:65,borderWidth:1,borderColor:'#865ff0',right:-33,bottom:-55},detailBody:{paddingHorizontal:26,paddingTop:30,paddingBottom:35},activityList:{gap:10},activity:{borderWidth:1,borderColor:'#f0ebf6',borderRadius:17,padding:13,flexDirection:'row',alignItems:'center',gap:13,backgroundColor:'#fff'},activityIcon:{width:48,height:48,borderRadius:13,alignItems:'center',justifyContent:'center'},activityIconText:{fontSize:23,fontWeight:'700',color:'#6328dc'},activityText:{flex:1},activityTitle:{fontSize:15,fontWeight:'800',color:'#291a40'},activityDescription:{fontSize:12,color:'#9a8ea8',marginTop:4},activityArrow:{fontSize:18,color:'#a18cbd',paddingRight:5},flashcard:{minHeight:250,backgroundColor:'#672be0',borderRadius:22,padding:25,justifyContent:'space-between'},flashLabel:{fontSize:10,letterSpacing:1.2,fontWeight:'800',color:'#d9c7fa'},flashText:{fontSize:23,lineHeight:31,fontWeight:'800',color:'#fff'},flashHint:{fontSize:10,fontWeight:'800',letterSpacing:1,color:'#decdfd'},question:{fontSize:18,lineHeight:25,fontWeight:'700',color:'#342346',marginVertical:24},option:{borderWidth:1,borderColor:'#eae3f2',padding:17,borderRadius:14,marginBottom:10},optionSelected:{borderColor:'#6329df',backgroundColor:'#f2ebff'},optionText:{color:'#4e405d',fontSize:14},optionSelectedText:{color:'#5921db',fontWeight:'700'},feedback:{marginTop:14,color:'#6329df',fontWeight:'700',fontSize:14},readingCard:{marginTop:23,padding:24,borderRadius:20,backgroundColor:'#f3edfd'},readingLabel:{fontSize:10,letterSpacing:1,fontWeight:'800',color:'#8655cf'},readingText:{fontSize:18,lineHeight:28,fontWeight:'700',color:'#3b2855',marginTop:18}
+  safe: { flex: 1, backgroundColor: '#f4f1fa' },
+  safeWelcome: { backgroundColor: '#5030c6' },
+  app: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  },
+  welcomeScroll: { flex: 1, backgroundColor: '#5030c6' },
+  welcomeFrame: { flexGrow: 1 },
+  welcome: {
+    flexGrow: 1,
+    width: '100%',
+    minHeight: 525,
+    backgroundColor: '#5030c6',
+    paddingHorizontal: 24,
+    paddingTop: 22,
+    paddingBottom: 30,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+  welcomeAccent: {
+    position: 'absolute',
+    width: 290,
+    height: 290,
+    borderRadius: 145,
+    backgroundColor: '#6545d1',
+    right: -98,
+    bottom: -142,
+  },
+  welcomeTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  brandIcon: {
+    width: 31,
+    height: 31,
+    borderRadius: 10,
+    backgroundColor: '#5d28dc',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandIconLight: { backgroundColor: '#fff' },
+  brandMark: { fontSize: 22, color: '#fff', fontWeight: '800' },
+  brandName: { fontSize: 20, fontWeight: '800', letterSpacing: -1, color: '#23133f' },
+  heroArt: { height: 210, alignItems: 'center', justifyContent: 'center' },
+  orbitOne: {
+    position: 'absolute',
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    borderWidth: 1,
+    borderColor: '#8163dc',
+  },
+  orbitTwo: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: '#6745d3',
+  },
+  paperBack: {
+    position: 'absolute',
+    width: 100,
+    height: 130,
+    borderRadius: 16,
+    backgroundColor: '#b69bed',
+    transform: [{ rotate: '-17deg' }, { translateX: -14 }],
+  },
+  paper: {
+    width: 104,
+    height: 135,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    padding: 19,
+    transform: [{ rotate: '9deg' }],
+    justifyContent: 'center',
+    gap: 8,
+  },
+  paperStar: { fontSize: 30, color: '#6033df', marginBottom: 8 },
+  paperLine: { height: 4, width: 66, borderRadius: 4, backgroundColor: '#e7def4' },
+  floatingStar: {
+    position: 'absolute',
+    right: '15%',
+    top: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#dcaaf1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: [{ rotate: '12deg' }],
+  },
+  floatingStarText: { fontSize: 22, color: '#5b21d8' },
+  welcomeCopy: { gap: 15 },
+  heroTitle: {
+    fontSize: 35,
+    lineHeight: 39,
+    fontWeight: '800',
+    letterSpacing: -1.5,
+    color: '#fff',
+  },
+  lavender: { color: '#d9b9ff' },
+  heroDescription: { fontSize: 13, lineHeight: 20, color: '#e5dcff', maxWidth: 300 },
+  welcomeBottom: { gap: 17 },
+  button: {
+    backgroundColor: '#5a22dd',
+    minHeight: 56,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  whiteButton: { backgroundColor: '#fff', minHeight: 48, borderRadius: 13 },
+  buttonText: { fontWeight: '800', fontSize: 14, color: '#5420d0' },
+  buttonSecondary: { backgroundColor: '#f2edfc' },
+  secondaryText: { color: '#5420d0' },
+  pressed: { opacity: 0.76 },
+  page: { paddingHorizontal: 26, paddingTop: 26, paddingBottom: 30 },
+  libraryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 42,
+  },
+  eyebrow: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+    color: '#8f7cae',
+    marginBottom: 9,
+  },
+  pageTitle: {
+    fontSize: 35,
+    lineHeight: 41,
+    letterSpacing: -1.5,
+    fontWeight: '800',
+    color: '#24143d',
+  },
+  subtitle: { fontSize: 14, color: '#8c829c', marginTop: 11 },
+  featureGrid: { flexDirection: 'row', gap: 10, marginTop: 23 },
+  featureCard: {
+    flex: 1,
+    minHeight: 122,
+    borderWidth: 1,
+    borderColor: '#eee9f3',
+    borderRadius: 17,
+    backgroundColor: '#faf9fc',
+    padding: 14,
+    alignItems: 'flex-start',
+  },
+  featureIcon: {
+    height: 42,
+    width: 42,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  featureSymbol: { fontSize: 24, fontWeight: '700' },
+  featureTitle: { fontSize: 14, fontWeight: '800', color: '#302442' },
+  featureDescription: { fontSize: 11, lineHeight: 16, marginTop: 4, color: '#6f627b' },
+  sectionHeading: {
+    marginTop: 29,
+    marginBottom: 17,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  sectionTitle: { fontSize: 23, fontWeight: '800', letterSpacing: -0.6, color: '#24143d' },
+  count: { fontSize: 10, fontWeight: '800', color: '#aa9dbb', letterSpacing: 1 },
+  unitNumber: { fontSize: 10, fontWeight: '800', color: '#f0e8f6', width: 34 },
+  unitCard: {
+    borderRadius: 16,
+    paddingHorizontal: 19,
+    paddingVertical: 18,
+    marginBottom: 11,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: 78,
+  },
+  unitTag: { fontSize: 9, fontWeight: '800', color: '#f1eaf5', letterSpacing: 1 },
+  unitTitle: { fontSize: 16, fontWeight: '800', color: '#fff', marginTop: 7 },
+  arrowCircle: {
+    borderWidth: 1,
+    borderColor: '#b998f0',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  arrowText: { color: '#fff', fontSize: 17 },
+  footnote: {
+    textAlign: 'center',
+    fontSize: 9,
+    letterSpacing: 1.2,
+    color: '#b1a6c0',
+    fontWeight: '700',
+    marginTop: 20,
+  },
+  unitHeader: {
+    backgroundColor: '#5921db',
+    paddingHorizontal: 26,
+    paddingTop: 22,
+    paddingBottom: 35,
+    borderBottomRightRadius: 38,
+    overflow: 'hidden',
+  },
+  unitNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 34,
+  },
+  back: {
+    width: 37,
+    height: 37,
+    borderRadius: 19,
+    backgroundColor: '#7445e5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backText: { color: '#fff', fontSize: 31, lineHeight: 33 },
+  navLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 1.4, color: '#ede4ff' },
+  headerEyebrow: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.3,
+    color: '#d4bfff',
+    marginBottom: 9,
+  },
+  headerTitle: {
+    fontSize: 30,
+    lineHeight: 35,
+    fontWeight: '800',
+    letterSpacing: -1,
+    color: '#fff',
+    maxWidth: '85%',
+  },
+  headerDecor: {
+    position: 'absolute',
+    width: 125,
+    height: 125,
+    borderRadius: 65,
+    borderWidth: 1,
+    borderColor: '#865ff0',
+    right: -33,
+    bottom: -55,
+  },
+  detailBody: { paddingHorizontal: 26, paddingTop: 30, paddingBottom: 35 },
+  activityList: { gap: 10 },
+  activity: {
+    borderWidth: 1,
+    borderColor: '#f0ebf6',
+    borderRadius: 17,
+    padding: 13,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+    backgroundColor: '#fff',
+  },
+  activityIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityIconText: { fontSize: 23, fontWeight: '700', color: '#6328dc' },
+  activityText: { flex: 1 },
+  activityTitle: { fontSize: 15, fontWeight: '800', color: '#291a40' },
+  activityDescription: { fontSize: 12, color: '#9a8ea8', marginTop: 4 },
+  activityArrow: { fontSize: 18, color: '#a18cbd', paddingRight: 5 },
+  flashcard: {
+    minHeight: 250,
+    backgroundColor: '#672be0',
+    borderRadius: 22,
+    padding: 25,
+    justifyContent: 'space-between',
+  },
+  flashLabel: { fontSize: 10, letterSpacing: 1.2, fontWeight: '800', color: '#d9c7fa' },
+  flashText: { fontSize: 23, lineHeight: 31, fontWeight: '800', color: '#fff' },
+  flashHint: { fontSize: 10, fontWeight: '800', letterSpacing: 1, color: '#decdfd' },
+  question: {
+    fontSize: 18,
+    lineHeight: 25,
+    fontWeight: '700',
+    color: '#342346',
+    marginVertical: 24,
+  },
+  option: {
+    borderWidth: 1,
+    borderColor: '#eae3f2',
+    padding: 17,
+    borderRadius: 14,
+    marginBottom: 10,
+  },
+  optionSelected: { borderColor: '#6329df', backgroundColor: '#f2ebff' },
+  optionText: { color: '#4e405d', fontSize: 14 },
+  optionSelectedText: { color: '#5921db', fontWeight: '700' },
+  feedback: { marginTop: 14, color: '#6329df', fontWeight: '700', fontSize: 14 },
+  readingCard: { marginTop: 23, padding: 24, borderRadius: 20, backgroundColor: '#f3edfd' },
+  readingLabel: { fontSize: 10, letterSpacing: 1, fontWeight: '800', color: '#8655cf' },
+  readingText: { fontSize: 18, lineHeight: 28, fontWeight: '700', color: '#3b2855', marginTop: 18 },
 });

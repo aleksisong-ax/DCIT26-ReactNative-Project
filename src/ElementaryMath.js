@@ -8,29 +8,303 @@ export default function ElementaryMath({ onExit }) {
   const [tierIndex, setTierIndex] = useState(null);
   const [lessonIndex, setLessonIndex] = useState(null);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [responses, setResponses] = useState({});
+  const [answersByQuestion, setAnswersByQuestion] = useState({});
   const tier = tierIndex === null ? null : mathTiers[tierIndex];
   const lesson = tier && lessonIndex !== null ? tier.lessons[lessonIndex] : null;
-  const questions = lesson ? [lesson, ...additionalMathPractice[tier.id][lesson.id].map(([question, options, answer, explanation]) => ({ question, options, answer, explanation }))] : [];
-  const currentQuestion = questions[questionIndex];
-  const choice = responses[questionIndex];
-  function resetPractice() { setQuestionIndex(0); setResponses({}); }
-  function back() {
-    if (lesson) { setLessonIndex(null); resetPractice(); }
-    else if (tier) setTierIndex(null);
+  const practiceQuestions = lesson
+    ? [
+        lesson,
+        ...additionalMathPractice[tier.id][lesson.id].map(
+          ([question, options, answer, explanation]) => ({
+            question,
+            options,
+            answer,
+            explanation,
+          }),
+        ),
+      ]
+    : [];
+  const currentQuestion = practiceQuestions[questionIndex];
+  const selectedAnswerIndex = answersByQuestion[questionIndex];
+  function resetPractice() {
+    setQuestionIndex(0);
+    setAnswersByQuestion({});
+  }
+  function goBack() {
+    if (lesson) {
+      setLessonIndex(null);
+      resetPractice();
+    } else if (tier) setTierIndex(null);
     else onExit();
   }
-  return <View style={styles.container}>
-    <View style={styles.header}><Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} style={styles.back}><Text style={styles.backText}>‹</Text></Pressable><View style={styles.headerText}><Text style={styles.headerTitle}>{lesson ? lesson.title : tier ? tier.title : 'Elementary Mathematics'}</Text><Text style={styles.headerSubtitle}>{tier ? tier.grades : 'Grades 1–6'}</Text></View></View>
-    <Entrance key={`${tierIndex}-${lessonIndex}`} fill><ScrollView contentContainerStyle={styles.body}>
-      {!tier && <><Text style={styles.heading}>Choose a learning tier</Text><Text style={styles.intro}>Explore four focus areas at the level that fits you.</Text>{mathTiers.map((item, i) => <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.title}, ${item.grades}`} onPress={() => setTierIndex(i)} style={({pressed}) => [styles.tierCard, i === 1 && styles.tierCardSecond, pressed && styles.pressed]}><Text style={styles.tierGrades}>{item.grades.toUpperCase()}</Text><Text style={styles.tierTitle}>{item.title}</Text><Text style={styles.tierDescription}>{item.description}</Text><Text style={styles.tierAction}>Explore lessons  →</Text></Pressable>)}</>}
-      {tier && !lesson && <><Text style={styles.heading}>Focus areas</Text><Text style={styles.intro}>{tier.description}</Text>{tier.lessons.map((item, i) => <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`Open ${item.title}`} onPress={() => { resetPractice(); setLessonIndex(i); }} style={({pressed}) => [styles.lessonCard, pressed && styles.pressed]}><View style={styles.iconBox}><Text style={styles.iconText}>{item.icon}</Text></View><View style={{ flex: 1 }}><Text style={styles.lessonTitle}>{item.title}</Text><Text style={styles.lessonMeta}>{item.topics.length} topics · 10 practice questions</Text></View><Text style={styles.arrow}>↗</Text></Pressable>)}</>}
-      {lesson && <><Text style={styles.heading}>Learn the basics</Text><Text style={styles.intro}>Explore each idea, then try the practice questions below.</Text>{lesson.topics.map(([title, text]) => <View style={styles.topicCard} key={title}><Text style={styles.topicTitle}>{title}</Text><Text style={styles.topicText}>{text}</Text></View>)}
-        <Text style={[styles.heading, styles.practiceHeading]}>Try it yourself</Text><View style={styles.practiceCard}><Text style={styles.progress}>QUESTION {questionIndex + 1} OF {questions.length}</Text>{questionIndex === 0 && <View accessible accessibilityLabel={lesson.visual.label} style={styles.visual}>{lesson.visual.tiles.map((tile, i) => <View key={i} style={styles.visualTile}><Text style={styles.visualText}>{tile}</Text></View>)}</View>}<Text style={styles.question}>{currentQuestion.question}</Text>{currentQuestion.options.map((option, i) => <Pressable key={option} accessibilityRole="button" accessibilityState={{selected: choice === i}} onPress={() => setResponses(current => ({ ...current, [questionIndex]: i }))} style={({pressed}) => [styles.option, choice === i && styles.optionSelected, pressed && styles.pressed]}><Text style={styles.optionText}>{option}</Text></Pressable>)}{choice !== undefined && <Entrance key={questionIndex}><Text accessibilityLiveRegion="polite" style={styles.feedback}>{choice === currentQuestion.answer ? 'Correct! ' : 'Not quite. '}{currentQuestion.explanation}</Text></Entrance>}<View style={styles.navigation}><Pressable accessibilityRole="button" accessibilityState={{disabled: questionIndex === 0}} disabled={questionIndex === 0} onPress={() => setQuestionIndex(index => index - 1)} style={[styles.navButton, questionIndex === 0 && styles.navDisabled]}><Text style={styles.navText}>← Previous</Text></Pressable><Pressable accessibilityRole="button" accessibilityState={{disabled: questionIndex === questions.length - 1}} disabled={questionIndex === questions.length - 1} onPress={() => setQuestionIndex(index => index + 1)} style={[styles.navButton, questionIndex === questions.length - 1 && styles.navDisabled]}><Text style={styles.navText}>Next →</Text></Pressable></View></View>
-      </>}
-    </ScrollView></Entrance>
-  </View>;
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          onPress={goBack}
+          style={styles.back}
+        >
+          <Text style={styles.backText}>‹</Text>
+        </Pressable>
+        <View style={styles.headerText}>
+          <Text style={styles.headerTitle}>
+            {lesson ? lesson.title : tier ? tier.title : 'Elementary Mathematics'}
+          </Text>
+          <Text style={styles.headerSubtitle}>{tier ? tier.grades : 'Grades 1–6'}</Text>
+        </View>
+      </View>
+      <Entrance key={`${tierIndex}-${lessonIndex}`} fill>
+        <ScrollView contentContainerStyle={styles.body}>
+          {!tier && (
+            <>
+              <Text style={styles.heading}>Choose a learning tier</Text>
+              <Text style={styles.intro}>Explore four focus areas at the level that fits you.</Text>
+              {mathTiers.map((tierOption, tierPosition) => (
+                <Pressable
+                  key={tierOption.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${tierOption.title}, ${tierOption.grades}`}
+                  onPress={() => setTierIndex(tierPosition)}
+                  style={({ pressed }) => [
+                    styles.tierCard,
+                    tierPosition === 1 && styles.tierCardSecond,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={styles.tierGrades}>{tierOption.grades.toUpperCase()}</Text>
+                  <Text style={styles.tierTitle}>{tierOption.title}</Text>
+                  <Text style={styles.tierDescription}>{tierOption.description}</Text>
+                  <Text style={styles.tierAction}>Explore lessons →</Text>
+                </Pressable>
+              ))}
+            </>
+          )}
+          {tier && !lesson && (
+            <>
+              <Text style={styles.heading}>Focus areas</Text>
+              <Text style={styles.intro}>{tier.description}</Text>
+              {tier.lessons.map((lessonOption, lessonPosition) => (
+                <Pressable
+                  key={lessonOption.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Open ${lessonOption.title}`}
+                  onPress={() => {
+                    resetPractice();
+                    setLessonIndex(lessonPosition);
+                  }}
+                  style={({ pressed }) => [styles.lessonCard, pressed && styles.pressed]}
+                >
+                  <View style={styles.iconBox}>
+                    <Text style={styles.iconText}>{lessonOption.icon}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.lessonTitle}>{lessonOption.title}</Text>
+                    <Text style={styles.lessonMeta}>
+                      {lessonOption.topics.length} topics · 10 practice questions
+                    </Text>
+                  </View>
+                  <Text style={styles.arrow}>↗</Text>
+                </Pressable>
+              ))}
+            </>
+          )}
+          {lesson && (
+            <>
+              <Text style={styles.heading}>Learn the basics</Text>
+              <Text style={styles.intro}>
+                Explore each idea, then try the practice questions below.
+              </Text>
+              {lesson.topics.map(([title, text]) => (
+                <View style={styles.topicCard} key={title}>
+                  <Text style={styles.topicTitle}>{title}</Text>
+                  <Text style={styles.topicText}>{text}</Text>
+                </View>
+              ))}
+              <Text style={[styles.heading, styles.practiceHeading]}>Try it yourself</Text>
+              <View style={styles.practiceCard}>
+                <Text style={styles.progress}>
+                  QUESTION {questionIndex + 1} OF {practiceQuestions.length}
+                </Text>
+                {questionIndex === 0 && (
+                  <View accessible accessibilityLabel={lesson.visual.label} style={styles.visual}>
+                    {lesson.visual.tiles.map((tile, tileIndex) => (
+                      <View key={tileIndex} style={styles.visualTile}>
+                        <Text style={styles.visualText}>{tile}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+                <Text style={styles.question}>{currentQuestion.question}</Text>
+                {currentQuestion.options.map((option, optionIndex) => (
+                  <Pressable
+                    key={option}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: selectedAnswerIndex === optionIndex }}
+                    onPress={() =>
+                      setAnswersByQuestion((previousAnswers) => ({
+                        ...previousAnswers,
+                        [questionIndex]: optionIndex,
+                      }))
+                    }
+                    style={({ pressed }) => [
+                      styles.option,
+                      selectedAnswerIndex === optionIndex && styles.optionSelected,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <Text style={styles.optionText}>{option}</Text>
+                  </Pressable>
+                ))}
+                {selectedAnswerIndex !== undefined && (
+                  <Entrance key={questionIndex}>
+                    <Text accessibilityLiveRegion="polite" style={styles.feedback}>
+                      {selectedAnswerIndex === currentQuestion.answer ? 'Correct! ' : 'Not quite. '}
+                      {currentQuestion.explanation}
+                    </Text>
+                  </Entrance>
+                )}
+                <View style={styles.navigation}>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityState={{ disabled: questionIndex === 0 }}
+                    disabled={questionIndex === 0}
+                    onPress={() => setQuestionIndex((previousIndex) => previousIndex - 1)}
+                    style={[styles.navButton, questionIndex === 0 && styles.navDisabled]}
+                  >
+                    <Text style={styles.navText}>← Previous</Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityState={{
+                      disabled: questionIndex === practiceQuestions.length - 1,
+                    }}
+                    disabled={questionIndex === practiceQuestions.length - 1}
+                    onPress={() => setQuestionIndex((previousIndex) => previousIndex + 1)}
+                    style={[
+                      styles.navButton,
+                      questionIndex === practiceQuestions.length - 1 && styles.navDisabled,
+                    ]}
+                  >
+                    <Text style={styles.navText}>Next →</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </Entrance>
+    </View>
+  );
 }
 const styles = StyleSheet.create({
-  container:{flex:1,backgroundColor:'#fff'},header:{backgroundColor:'#5935c7',paddingHorizontal:25,paddingTop:24,paddingBottom:28,borderBottomRightRadius:36,flexDirection:'row',alignItems:'flex-start',gap:15},back:{width:38,height:38,borderRadius:19,backgroundColor:'#7549e7',alignItems:'center',justifyContent:'center'},backText:{fontSize:30,lineHeight:34,color:'#fff'},headerText:{flex:1},headerTitle:{fontSize:26,lineHeight:32,fontWeight:'800',color:'#fff'},headerSubtitle:{fontSize:13,lineHeight:19,color:'#e2d7ff',marginTop:6},body:{padding:25,paddingBottom:45},heading:{fontSize:22,fontWeight:'800',color:'#26163e'},intro:{fontSize:14,lineHeight:21,color:'#695d78',marginTop:8,marginBottom:22},tierCard:{backgroundColor:'#5935c7',borderRadius:18,padding:21,marginBottom:12},tierCardSecond:{backgroundColor:'#1f7180'},tierGrades:{fontSize:10,letterSpacing:1,fontWeight:'800',color:'#f1eaff'},tierTitle:{fontSize:22,fontWeight:'800',color:'#fff',marginTop:6},tierDescription:{fontSize:14,lineHeight:20,color:'#fff',marginTop:7},tierAction:{fontSize:13,fontWeight:'800',color:'#fff',marginTop:17},pressed:{opacity:.7},lessonCard:{flexDirection:'row',alignItems:'center',gap:13,padding:14,borderRadius:16,borderWidth:1,borderColor:'#eae4f1',backgroundColor:'#faf9fc',marginBottom:10},iconBox:{width:48,height:48,borderRadius:13,backgroundColor:'#eee6fb',alignItems:'center',justifyContent:'center'},iconText:{fontSize:17,fontWeight:'800',color:'#5935c7'},lessonTitle:{fontSize:16,fontWeight:'800',color:'#302442'},lessonMeta:{fontSize:12,color:'#6e617b',marginTop:5},arrow:{fontSize:19,color:'#6c558b'},topicCard:{padding:17,borderRadius:15,backgroundColor:'#f7f3fc',marginBottom:10},topicTitle:{fontSize:15,fontWeight:'800',color:'#432772'},topicText:{fontSize:14,lineHeight:21,color:'#40334f',marginTop:7},practiceHeading:{marginTop:24,marginBottom:14},practiceCard:{padding:18,borderRadius:18,borderWidth:1,borderColor:'#e7dff1'},progress:{fontSize:11,fontWeight:'800',letterSpacing:1,color:'#6b5790',marginBottom:16},navigation:{flexDirection:'row',gap:10,marginTop:18},navButton:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',paddingHorizontal:8,borderRadius:12,backgroundColor:'#eee6fb'},navDisabled:{opacity:.4},navText:{fontSize:13,fontWeight:'800',color:'#5424b7'},visual:{flexDirection:'row',flexWrap:'wrap',justifyContent:'center',gap:8,marginBottom:18},visualTile:{minWidth:50,minHeight:48,borderRadius:12,backgroundColor:'#eae1fa',padding:10,alignItems:'center',justifyContent:'center'},visualText:{fontSize:16,fontWeight:'800',color:'#4e259e'},question:{fontSize:16,fontWeight:'700',lineHeight:23,color:'#30203f',marginBottom:16},option:{borderWidth:1,borderColor:'#ded4eb',borderRadius:12,padding:13,marginBottom:8},optionSelected:{borderColor:'#5b24d8',backgroundColor:'#f2ebff'},optionText:{fontSize:15,color:'#342247'},feedback:{fontSize:14,lineHeight:21,fontWeight:'700',color:'#5424b7',marginTop:10}
+  container: { flex: 1, backgroundColor: '#fff' },
+  header: {
+    backgroundColor: '#5935c7',
+    paddingHorizontal: 25,
+    paddingTop: 24,
+    paddingBottom: 28,
+    borderBottomRightRadius: 36,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 15,
+  },
+  back: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#7549e7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backText: { fontSize: 30, lineHeight: 34, color: '#fff' },
+  headerText: { flex: 1 },
+  headerTitle: { fontSize: 26, lineHeight: 32, fontWeight: '800', color: '#fff' },
+  headerSubtitle: { fontSize: 13, lineHeight: 19, color: '#e2d7ff', marginTop: 6 },
+  body: { padding: 25, paddingBottom: 45 },
+  heading: { fontSize: 22, fontWeight: '800', color: '#26163e' },
+  intro: { fontSize: 14, lineHeight: 21, color: '#695d78', marginTop: 8, marginBottom: 22 },
+  tierCard: { backgroundColor: '#5935c7', borderRadius: 18, padding: 21, marginBottom: 12 },
+  tierCardSecond: { backgroundColor: '#1f7180' },
+  tierGrades: { fontSize: 10, letterSpacing: 1, fontWeight: '800', color: '#f1eaff' },
+  tierTitle: { fontSize: 22, fontWeight: '800', color: '#fff', marginTop: 6 },
+  tierDescription: { fontSize: 14, lineHeight: 20, color: '#fff', marginTop: 7 },
+  tierAction: { fontSize: 13, fontWeight: '800', color: '#fff', marginTop: 17 },
+  pressed: { opacity: 0.7 },
+  lessonCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#eae4f1',
+    backgroundColor: '#faf9fc',
+    marginBottom: 10,
+  },
+  iconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 13,
+    backgroundColor: '#eee6fb',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconText: { fontSize: 17, fontWeight: '800', color: '#5935c7' },
+  lessonTitle: { fontSize: 16, fontWeight: '800', color: '#302442' },
+  lessonMeta: { fontSize: 12, color: '#6e617b', marginTop: 5 },
+  arrow: { fontSize: 19, color: '#6c558b' },
+  topicCard: { padding: 17, borderRadius: 15, backgroundColor: '#f7f3fc', marginBottom: 10 },
+  topicTitle: { fontSize: 15, fontWeight: '800', color: '#432772' },
+  topicText: { fontSize: 14, lineHeight: 21, color: '#40334f', marginTop: 7 },
+  practiceHeading: { marginTop: 24, marginBottom: 14 },
+  practiceCard: { padding: 18, borderRadius: 18, borderWidth: 1, borderColor: '#e7dff1' },
+  progress: {
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1,
+    color: '#6b5790',
+    marginBottom: 16,
+  },
+  navigation: { flexDirection: 'row', gap: 10, marginTop: 18 },
+  navButton: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    backgroundColor: '#eee6fb',
+  },
+  navDisabled: { opacity: 0.4 },
+  navText: { fontSize: 13, fontWeight: '800', color: '#5424b7' },
+  visual: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 18,
+  },
+  visualTile: {
+    minWidth: 50,
+    minHeight: 48,
+    borderRadius: 12,
+    backgroundColor: '#eae1fa',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  visualText: { fontSize: 16, fontWeight: '800', color: '#4e259e' },
+  question: { fontSize: 16, fontWeight: '700', lineHeight: 23, color: '#30203f', marginBottom: 16 },
+  option: {
+    borderWidth: 1,
+    borderColor: '#ded4eb',
+    borderRadius: 12,
+    padding: 13,
+    marginBottom: 8,
+  },
+  optionSelected: { borderColor: '#5b24d8', backgroundColor: '#f2ebff' },
+  optionText: { fontSize: 15, color: '#342247' },
+  feedback: { fontSize: 14, lineHeight: 21, fontWeight: '700', color: '#5424b7', marginTop: 10 },
 });

@@ -18,11 +18,15 @@ export default function useReducedMotion() {
     let onChange;
     if (Platform.OS === 'web' && typeof window !== 'undefined' && window.matchMedia) {
       media = window.matchMedia('(prefers-reduced-motion: reduce)');
-      onChange = event => setReduced(event.matches);
+      onChange = (event) => setReduced(event.matches);
       setReduced(media.matches);
       if (media.addEventListener) media.addEventListener('change', onChange);
     } else {
-      AccessibilityInfo.isReduceMotionEnabled().then(value => { if (mounted) setReduced(value); }).catch(() => {});
+      AccessibilityInfo.isReduceMotionEnabled()
+        .then((value) => {
+          if (mounted) setReduced(value);
+        })
+        .catch(() => {});
       subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduced);
     }
     return () => {

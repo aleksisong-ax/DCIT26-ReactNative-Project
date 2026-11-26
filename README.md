@@ -1,67 +1,123 @@
 # StudyPrep
 
-StudyPrep is a mobile-first React Native study app for creating and practicing with learning materials. It also includes four sample study units and an Elementary Mathematics unit for Grades 1–6.
+StudyPrep is a mobile-first React Native study app for making and practicing with learning materials. It includes four sample study units, an Elementary Mathematics unit for Grades 1–6, and dictionary-backed vocabulary activities. The same app can run on iOS, Android, and the web through Expo and React Native Web.
 
 ## Features
 
-- Create quizzes containing multiple-choice and identification questions. Choose the correct multiple-choice option or specify an expected identification answer.
-- Take quizzes, receive immediate feedback, and see a final score. Identification answers ignore case and differences in surrounding or repeated whitespace, but otherwise must match exactly.
-- Create flashcard decks with multiple cards and flip through them. Flashcards animate when flipped; screen entrances and quiz feedback also use subtle transitions. These animations respect the device's reduced-motion preference.
-- Create and read notes or reviewers.
-- Delete saved materials with confirmation.
-- Explore the original sample study units, including a flashcard, quiz, reviewer, and summary for each.
-- Study Elementary Mathematics in Primary (Grades 1–3) or Intermediate (Grades 4–6). Each tier has four focus areas with short topic cards, a visual example, and 10 practice questions per area. Answers and feedback are kept only while the lesson is open; there is no saved progress or score.
-- Explore a locally selected word of the day and take two five-question dictionary activities: choose a word's meaning or choose the word matching a definition. They use definitions fetched from Free Dictionary API. The word of the day changes with the device's local calendar date and repeats after 16 days; it is not Merriam-Webster's word of the day.
-- Materials are saved locally on the device or in the browser using AsyncStorage; quiz results are not saved.
+- Create quizzes with multiple-choice and identification questions. Multiple-choice options must be distinct; identification answers are graded case-insensitively after whitespace normalization, but synonyms and spelling variations are not accepted.
+- Practice quizzes with immediate feedback and an in-session score. Quiz results are not saved.
+- Create flashcard decks, flip cards, and move through a deck. Screen entrances, card flips, and feedback transitions respect the device's reduced-motion preference.
+- Write and read notes or reviewers; delete saved materials with confirmation.
+- Explore four sample study units, each with a flashcard, one-question quiz, reviewer, and summary.
+- Study Elementary Mathematics at Primary (Grades 1–3) or Intermediate (Grades 4–6) level. Each tier has four focus areas; each focus area includes topic cards, a visual example, and 10 practice questions. Answers and feedback last only while the lesson is open.
+- Use a locally selected word of the day or take vocabulary activities that ask for a word's meaning or the word matching a definition. Activities use up to five questions per attempt and require at least four dictionary definitions to load. The 16-word curated list cycles according to the device's local calendar date; it is not Merriam-Webster's word of the day.
+- Save personal study materials locally on the device or in the browser with AsyncStorage. There is no account or cloud sync.
 
-To create content, enter the app, tap **Your materials**, and choose a material type. Tap a saved item in **Your collection** to study it.
+To make content, open **Your materials** and choose a type. Tap an item in **Your collection** to study it.
 
-## Stack and structure
+## Technology stack
 
-- React Native and React 19, using Expo SDK 53; React Native Web supports the browser version.
-- `@react-native-async-storage/async-storage` stores materials locally (browser storage on web).
-- `App.js`: sample units, main navigation, and original screens.
-- `src/MyMaterials.js`: personal material creation, local storage, and practice screens.
-- `src/FlipCard.js`: shared animated flashcard.
-- `src/Entrance.js` and `src/useReducedMotion.js`: reusable entrance transitions and motion-preference handling, using React Native's built-in Animated API.
-- `src/Vocabulary.js`: dictionary-backed word of the day, quiz, and vocabulary test.
-- `src/ElementaryMath.js`, `src/mathLessons.js`, and `src/mathPractice.js`: elementary mathematics navigation, lesson cards, visuals, and practice questions.
-- `app.json`: Expo app metadata, orientation, and GitHub Pages base path.
-- `package.json` and `package-lock.json`: dependencies and npm scripts.
-- `.github/workflows/pages.yml`: GitHub Pages build and deployment.
-- `.gitignore`: excludes dependencies and generated output.
+- Expo SDK `~53.0.0`, React `19.0.0`, React Native `0.79.6`, and React Native Web `^0.20.0`.
+- `@react-native-async-storage/async-storage` `2.1.2` for local persistence; Expo Status Bar `~2.2.3` and Metro runtime `~5.0.4` are also declared dependencies.
+- React Native's built-in `Animated` API for transitions and flashcard motion.
+- npm with a committed `package-lock.json` for reproducible dependency installation.
+
+## Project structure
+
+```text
+.
+├── App.js                         # Main navigation, sample units, shared home/unit screens, styles
+├── app.json                       # Expo metadata, portrait/light appearance, Pages base path
+├── package.json                   # Dependencies and npm scripts
+├── package-lock.json              # Locked dependency tree
+├── README.md                      # Project documentation
+├── SECURITY.md                    # Security practices, audit notes, and reporting guidance
+├── .gitignore                     # Generated output, local environment files, signing keys
+├── .github/workflows/pages.yml    # Static web build and GitHub Pages deployment
+└── src/
+    ├── MyMaterials.js             # Material creation, local storage, validation, study flows
+    ├── Vocabulary.js              # Word of the day and dictionary activities
+    ├── ElementaryMath.js           # Math tier, lesson, and practice screens
+    ├── mathLessons.js              # Lesson topics, examples, and first question per area
+    ├── mathPractice.js             # Nine additional practice questions per area
+    ├── FlipCard.js                 # Shared animated flashcard component
+    ├── Entrance.js                 # Reusable entrance transition
+    └── useReducedMotion.js         # Web/native reduced-motion preference handling
+```
 
 ## Setup and running
 
-Install Node.js and npm, then run:
+Use Node.js 20 and npm (Node 20 is also used by the GitHub Pages workflow). From a shell:
 
 ```sh
+git clone https://github.com/aleksisong-ax/DCIT26-ReactNative-Project.git
+cd DCIT26-ReactNative-Project
 npm ci
 npm start
 ```
 
-Use the Expo development server instructions to open the app on a device or emulator. Alternatively, run `npm run android`, `npm run ios`, or `npm run web`. Android and iOS require appropriate local tooling or a compatible Expo Go installation; iOS simulator tooling requires macOS.
+Expo starts a development server and displays options for opening the app. Available scripts are:
 
-There are currently no project-specific environment variables or secrets.
+| Command | Purpose |
+| --- | --- |
+| `npm start` | Start the Expo development server. |
+| `npm run web` | Start the app for web development. |
+| `npm run android` | Start Expo with the Android target. |
+| `npm run ios` | Start Expo with the iOS target. |
+| `npm run export` | Run Expo's static export using its default platform selection. |
+
+Android and iOS use the Expo development server; a compatible Expo Go installation or platform tooling/emulator may be needed. iOS simulator tooling requires macOS.
+
+There are no app-specific environment variables. The Pages workflow uses GitHub's automatically provided workflow token; no repository secret is required by the current code or workflow.
 
 ## Build and test
 
-`npm run export` invokes Expo's export command; for a web-only static export use `npx expo export --platform web`. Native installable builds and store deployment are not configured. There is no automated test suite in the repository yet.
+The deployment build command is:
 
-## Storage, APIs, and deployment
+```sh
+npx expo export --platform web
+```
 
-Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. The legacy key and Expo slug are retained to avoid disrupting existing data and project identity. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There is no app backend, server database, or account system.
+It creates the static web output in `dist/`. The GitHub Actions workflow runs this same command. `npm run export` is the general Expo export script and uses the CLI's default platform selection.
 
-The vocabulary activities fetch English definitions from `https://freedictionaryapi.com/api/v1/entries/en/{word}` and require an internet connection. Word selections come from a curated 16-word list in `src/Vocabulary.js`, and the first available definition is used. The activity displays links to source entries, attribution, and license information. Definitions are from Wiktionary contributors, provided by [Free Dictionary API](https://freedictionaryapi.com/), and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Definitions are selected and formatted for the activity; their source entries and contributor histories are linked in the app. No Merriam-Webster content is used.
+There is currently no automated unit, integration, or UI test suite, and no lint script. A successful web export checks that Expo can resolve and bundle the app; it is not a substitute for exercising the app on web and native targets. Run `npm audit` to review known dependency advisories.
 
-GitHub Actions builds the web app on pushes to `main` and deploys `dist/` to GitHub Pages using `.github/workflows/pages.yml`. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. The site is at https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/.
+## Local data and APIs
 
-The Expo `experiments.baseUrl` setting in `app.json` matches the repository path. Change it if deploying to a different path. The workflow can also be started manually from the Actions tab.
+### Saved materials
+
+There is no server database. AsyncStorage uses the key `@prepcrux/materials-v1` and stores a JSON array with these material shapes:
+
+- Quiz: `{ id, kind: 'quiz', title, questions }`; each question stores its type, prompt, four options, correct option index, and expected identification answer.
+- Flashcard deck: `{ id, kind: 'flashcards', title, cards }`; each card stores a front and back.
+- Notes: `{ id, kind: 'notes', title, notes }`.
+
+On load, the app checks the saved records before rendering them. If the stored value is malformed or incompatible, it leaves the data untouched and disables create/delete operations rather than overwriting it. Browser storage and device storage are local and unencrypted; clearing browser data, uninstalling the app, or changing devices can remove access. Do not store sensitive information. Materials cannot currently be edited, imported, exported, backed up, or synced.
+
+### Dictionary
+
+Vocabulary activities request English entries from:
+
+```text
+https://freedictionaryapi.com/api/v1/entries/en/{word}
+```
+
+Words are drawn from the 16-item list in `src/Vocabulary.js`; the app URL-encodes each word, uses the first available definition, and times out dictionary requests after 12 seconds. An internet connection is required. Dictionary content is displayed as text, not interpreted as HTML. Definitions are from Wiktionary contributors via [Free Dictionary API](https://freedictionaryapi.com/) and are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Source entries, attribution, and license links are shown in the app. No Merriam-Webster content is used.
+
+There are no other app API endpoints, authentication services, or backend services.
+
+## Deployment
+
+`.github/workflows/pages.yml` builds the web app and deploys `dist/` to GitHub Pages when code is pushed to `main`; it can also be started manually from the Actions tab. In the repository, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. The configured site URL is <https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/>.
+
+`app.json` sets `expo.experiments.baseUrl` to `/DCIT26-ReactNative-Project`, matching this repository's Pages path. Update that value if deploying under a different path. The workflow grants read access to the build job and Pages deployment permissions only to the deploy job; action references are pinned to full commit SHAs.
+
+Native installable builds and app-store deployment are not configured in this repository.
 
 ## Limitations and development notes
 
-- Saved materials cannot currently be edited, imported, exported, or shared. Delete and recreate an item to change it.
-- Identification grading accepts one expected text answer; it does not evaluate synonyms or spelling variations.
-- No persistent quiz results, progress tracking, authentication, cloud sync, or AI-generated content.
-- Local data is not backed up or synced and is not suitable for sensitive information.
-- `npm audit` has reported vulnerabilities in transitive dependencies, including high-severity advisories in development/build tooling. Review these before production use and update the Expo stack when a compatible fix is available.
+- The app has no authentication, server-side authorization, cloud sync, progress tracking, persistent quiz scores, or AI-generated content.
+- Local data is not encrypted or backed up and is unsuitable for sensitive information.
+- The dictionary depends on a third-party service and may be unavailable or rate-limited; failures are shown with a retry option.
+- `npm audit` currently reports transitive Expo/build-tool dependency advisories. See [SECURITY.md](SECURITY.md) for the audit scope, remaining findings, and upgrade guidance.
+- Keep documentation synchronized with the implementation. The Expo SDK is pinned at version 53; a major SDK upgrade should be planned and tested rather than applied with a forced dependency fix.

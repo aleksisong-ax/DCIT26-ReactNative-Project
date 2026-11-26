@@ -3,3 +3,12 @@ node_modules/
 dist/
 web-build/
 *.log
+
+# Local environment files and signing credentials; commit only safe examples.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.keystore
