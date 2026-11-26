@@ -1,33 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, Platform, Pressable, Text } from 'react-native';
+import { Animated, Easing, Pressable, Text } from 'react-native';
+import useReducedMotion from './useReducedMotion';
 
 // The visible face changes while the card is edge-on, so long text can size the card naturally.
 export default function FlipCard({ flipped, onFlip, front, back, frontLabel, backLabel, cardStyle, labelStyle, textStyle, hintStyle }) {
   const rotation = useRef(new Animated.Value(0)).current;
   const [visibleBack, setVisibleBack] = useState(flipped);
-  // Start without motion until the device preference is known.
-  const [reduceMotion, setReduceMotion] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-    let subscription;
-    let media;
-    let onMediaChange;
-    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.matchMedia) {
-      media = window.matchMedia('(prefers-reduced-motion: reduce)');
-      onMediaChange = event => setReduceMotion(event.matches);
-      setReduceMotion(media.matches);
-      if (media.addEventListener) media.addEventListener('change', onMediaChange);
-    } else {
-      AccessibilityInfo.isReduceMotionEnabled().then(value => { if (mounted) setReduceMotion(value); }).catch(() => {});
-      subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
-    }
-    return () => {
-      mounted = false;
-      subscription?.remove();
-      if (media?.removeEventListener) media.removeEventListener('change', onMediaChange);
-    };
-  }, []);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     rotation.stopAnimation();

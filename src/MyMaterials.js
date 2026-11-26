@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FlipCard from './FlipCard';
+import Entrance from './Entrance';
 
 const STORAGE_KEY = '@prepcrux/materials-v1';
 const emptyQuestion = () => ({ type: 'multiple', prompt: '', options: ['', '', '', ''], correctIndex: 0, answer: '' });
@@ -93,7 +94,7 @@ export default function MyMaterials({ onExit }) {
     else setPage('list');
   }
   return <View style={styles.container}><Header title={page === 'list' ? 'My materials' : page === 'create' ? `New ${kind === 'flashcards' ? 'flashcard deck' : kind === 'notes' ? 'notes' : 'quiz'}` : selected?.title || 'My materials'} subtitle={page === 'list' ? 'Create and study your materials.' : page === 'create' ? 'Your work stays on this device.' : ''} back={back}/>
-    <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
+    <Entrance key={page} fill><ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
       {page === 'list' && <><Text style={styles.eyebrow}>CREATE</Text><Text style={styles.heading}>Create study material</Text><Text style={styles.intro}>Make quizzes, flashcards and notes, then study at your own pace.</Text>
         {storageError ? <Text accessibilityRole="alert" style={styles.error}>{storageError}</Text> : null}
         <View style={styles.createRow}><Action label="+ Quiz" onPress={() => startCreate('quiz')} disabled={loading || !!storageError}/><Action label="+ Flashcards" onPress={() => startCreate('flashcards')} disabled={loading || !!storageError}/><Action label="+ Notes" onPress={() => startCreate('notes')} disabled={loading || !!storageError}/></View>
@@ -109,11 +110,11 @@ export default function MyMaterials({ onExit }) {
       </>}
       {page === 'detail' && selected && <><Text style={styles.eyebrow}>{selected.kind === 'quiz' ? 'QUIZ' : selected.kind === 'notes' ? 'NOTES / REVIEWER' : 'FLASHCARD DECK'}</Text>
         {selected.kind === 'notes' ? <View style={styles.reading}><Text selectable style={styles.readingText}>{selected.notes}</Text></View> : selected.kind === 'flashcards' ? <><Text style={styles.intro}>Card {index + 1} of {selected.cards.length} · tap to flip</Text><FlipCard key={`${selected.id}-${index}`} flipped={flipped} onFlip={() => setFlipped(value => !value)} front={selected.cards[index].front} back={selected.cards[index].back} frontLabel="FRONT" backLabel="BACK" cardStyle={styles.flashcard} labelStyle={styles.flashLabel} textStyle={styles.flashText}/><View style={styles.navRow}><Action secondary label="← Previous" disabled={index === 0} onPress={() => { setIndex(index - 1); setFlipped(false); }}/><Action secondary label="Next →" disabled={index === selected.cards.length - 1} onPress={() => { setIndex(index + 1); setFlipped(false); }}/></View></> : <><Text style={styles.intro}>Question {index + 1} of {selected.questions.length} · {selected.questions[index].type === 'multiple' ? 'Multiple choice' : 'Identification'}</Text><Text style={styles.question}>{selected.questions[index].prompt}</Text>{selected.questions[index].type === 'multiple' ? selected.questions[index].options.map((option, i) => <Pressable accessibilityRole="button" accessibilityState={{ selected: response === i, disabled: checked }} disabled={checked} onPress={() => setResponse(i)} key={i} style={[styles.answer, response === i && styles.answerSelected]}><Text style={styles.answerText}>{String.fromCharCode(65+i)}. {option}</Text></Pressable>) : <Field label="Your answer" value={typeof response === 'string' ? response : ''} onChangeText={value => { if (!checked) setResponse(value); }} placeholder="Type your answer"/>}
-          {checked ? <><Text accessibilityLiveRegion="polite" style={styles.feedback}>{results[results.length - 1] ? '✓ Correct!' : `Not quite. Correct answer: ${selected.questions[index].type === 'multiple' ? selected.questions[index].options[selected.questions[index].correctIndex] : selected.questions[index].answer}`}</Text><Action label={index + 1 === selected.questions.length ? 'See results' : 'Next question →'} onPress={nextQuestion}/></> : <Action label="Check answer" onPress={checkAnswer}/>}</>}
+          {checked ? <><Entrance><Text accessibilityLiveRegion="polite" style={styles.feedback}>{results[results.length - 1] ? '✓ Correct!' : `Not quite. Correct answer: ${selected.questions[index].type === 'multiple' ? selected.questions[index].options[selected.questions[index].correctIndex] : selected.questions[index].answer}`}</Text></Entrance><Action label={index + 1 === selected.questions.length ? 'See results' : 'Next question →'} onPress={nextQuestion}/></> : <Action label="Check answer" onPress={checkAnswer}/>}</>}
         {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}<View style={styles.deleteArea}>{pendingDelete ? <><Text style={styles.intro}>Delete this material permanently?</Text><View style={styles.navRow}><Action secondary label="Cancel" onPress={() => setPendingDelete(false)}/><Action secondary label="Yes, delete" disabled={saving} onPress={removeMaterial}/></View></> : <Action secondary label="Delete material" onPress={() => setPendingDelete(true)} disabled={!!storageError}/>}</View>
       </>}
       {page === 'result' && selected && <><Text style={styles.eyebrow}>QUIZ COMPLETE</Text><Text style={styles.heading}>Nice work!</Text><View style={styles.score}><Text style={styles.scoreValue}>{results.filter(Boolean).length} / {results.length}</Text><Text style={styles.scoreCaption}>correct answers</Text></View><Action label="Try again" onPress={() => openMaterial(selected)}/><View style={{ height: 10 }}/><Action secondary label="Back to collection" onPress={() => setPage('list')}/><Text style={styles.small}>Results are not saved.</Text></>}
-    </ScrollView></View>;
+    </ScrollView></Entrance></View>;
 }
 
 const styles = StyleSheet.create({

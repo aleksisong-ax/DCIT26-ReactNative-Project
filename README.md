@@ -6,7 +6,7 @@ PrepCrux is a mobile-first React Native study app for creating and practicing wi
 
 - Create quizzes containing multiple-choice and identification questions. Choose the correct multiple-choice option or specify an expected identification answer.
 - Take quizzes, receive immediate feedback, and see a final score. Identification answers ignore case and differences in surrounding or repeated whitespace, but otherwise must match exactly.
-- Create flashcard decks with multiple cards and flip through them. Flashcards animate when flipped and respect the device's reduced-motion preference.
+- Create flashcard decks with multiple cards and flip through them. Flashcards animate when flipped; screen entrances and quiz feedback also use subtle transitions. These animations respect the device's reduced-motion preference.
 - Create and read notes or reviewers.
 - Delete saved materials with confirmation.
 - Explore the original sample study units, including a flashcard, quiz, reviewer, and summary for each.
@@ -21,7 +21,8 @@ To create content, enter the app, tap **Create & study your own materials**, and
 - `@react-native-async-storage/async-storage` stores materials locally (browser storage on web).
 - `App.js`: sample units, main navigation, and original screens.
 - `src/MyMaterials.js`: personal material creation, local storage, and practice screens.
-- `src/FlipCard.js`: shared animated flashcard with reduced-motion support.
+- `src/FlipCard.js`: shared animated flashcard.
+- `src/Entrance.js` and `src/useReducedMotion.js`: reusable entrance transitions and motion-preference handling, using React Native's built-in Animated API.
 - `src/Vocabulary.js`: dictionary-backed word of the day, quiz, and vocabulary test.
 - `app.json`: Expo app metadata, orientation, and GitHub Pages base path.
 - `package.json` and `package-lock.json`: dependencies and npm scripts.
