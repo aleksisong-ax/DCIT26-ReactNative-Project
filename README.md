@@ -10,6 +10,7 @@ PrepCrux is a mobile-first React Native study app for creating and practicing wi
 - Create and read notes or reviewers.
 - Delete saved materials with confirmation.
 - Explore the original sample study units, including a flashcard, quiz, reviewer, and summary for each.
+- Explore a locally selected word of the day and take two five-question dictionary activities: choose a word's meaning or choose the word matching a definition. They use definitions fetched from Free Dictionary API. The word of the day changes with the device's local calendar date and repeats after 16 days; it is not Merriam-Webster's word of the day.
 - Materials are saved locally on the device or in the browser using AsyncStorage; quiz results are not saved.
 
 To create content, enter the app, tap **Create & study your own materials**, and choose a material type. Tap a saved item in **Your collection** to study it.
@@ -20,6 +21,7 @@ To create content, enter the app, tap **Create & study your own materials**, and
 - `@react-native-async-storage/async-storage` stores materials locally (browser storage on web).
 - `App.js`: sample units, main navigation, and original screens.
 - `src/MyMaterials.js`: personal material creation, local storage, and practice screens.
+- `src/Vocabulary.js`: dictionary-backed word of the day, quiz, and vocabulary test.
 - `app.json`: Expo app metadata, orientation, and GitHub Pages base path.
 - `package.json` and `package-lock.json`: dependencies and npm scripts.
 - `.github/workflows/pages.yml`: GitHub Pages build and deployment.
@@ -44,7 +46,9 @@ There are currently no project-specific environment variables or secrets.
 
 ## Storage, APIs, and deployment
 
-Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There are no API endpoints, server database, or accounts.
+Materials are stored under the AsyncStorage key `@prepcrux/materials-v1` as a JSON array of quizzes, flashcard decks, and notes. This storage is local and unencrypted; clearing browser data, uninstalling the app, or changing devices may remove access to the materials. Do not store sensitive information. There is no app backend, server database, or account system.
+
+The vocabulary activities fetch English definitions from `https://freedictionaryapi.com/api/v1/entries/en/{word}` and require an internet connection. Word selections come from a curated 16-word list in `src/Vocabulary.js`, and the first available definition is used. The activity displays links to source entries, attribution, and license information. Definitions are from Wiktionary contributors, provided by [Free Dictionary API](https://freedictionaryapi.com/), and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Definitions are selected and formatted for the activity; their source entries and contributor histories are linked in the app. No Merriam-Webster content is used.
 
 GitHub Actions builds the web app on pushes to `main` and deploys `dist/` to GitHub Pages using `.github/workflows/pages.yml`. In the repository's **Settings → Pages**, set the build and deployment source to **GitHub Actions**. The site is at https://aleksisong-ax.github.io/DCIT26-ReactNative-Project/.
 
